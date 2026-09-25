@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş & Kayıt Ol | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    
+    <!-- EmailJS SDK Eklendi -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // EmailJS Public Key'inizi buraya girin
+            emailjs.init("YOUR_PUBLIC_KEY");
+        })();
+    </script>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #eab308 100%);
+            margin: 0;
+            font-family: inherit;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3);
+            border: 2px solid #fde047;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-header .logo {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .auth-header h1 {
+            font-size: 22px;
+            margin: 0;
+            color: #1e3a8a;
+        }
+
+        .auth-header p {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .auth-tab.active {
+            background: #1e3a8a;
+            color: #fde047;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #1e3a8a;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #1e3a8a;
+            color: #fde047;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background: #1e40af;
+            transform: translateY(-1px);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="logo">🎓</div>
+            <h1>YKS Akıllı Takip</h1>
+            <p>Hedeflerine ulaşmak için ilk adımı at!</p>
+        </div>
+
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Giriş Yap</div>
+            <div class="auth-tab" id="tabRegister" onclick="switchTab('register')">Kayıt Ol</div>
+        </div>
+
+        <!-- GİRİŞ FORMU -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="loginEmail">E-posta Adresi (Gmail)</label>
+                <input type="email" id="loginEmail" placeholder="ornek@gmail.com" pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="Lütfen geçerli bir @gmail.com adresi giriniz." required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Şifre</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-submit">Giriş Yap</button>
+        </form>
+
+        <!-- KAYIT FORMU -->
+        <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label for="regName">Ad Soyad</label>
+                <input type="text" id="regName" placeholder="Ecrin Su Ayan" required>
+            </div>
+            <div class="form-group">
+                <label for="regEmail">E-posta Adresi (Gmail)</label>
+                <input type="email" id="regEmail" placeholder="ornek@gmail.com" pattern="^[a-zA-Z0-9._%+-]+@gmail\.com$" title="Lütfen geçerli bir @gmail.com adresi giriniz." required>
+            </div>
+            <div class="form-group">
+                <label for="regTarget">Alan Seçimi</label>
+                <select id="regTarget">
+                    <option value="Sayısal">Sayısal (SAY)</option>
+                    <option value="Eşit Ağırlık">Eşit Ağırlık (EA)</option>
+                    <option value="Sözel">Sözel (SÖZ)</option>
+                    <option value="Dil">Yabancı Dil (DİL)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Şifre</label>
+                <input type="password" id="regPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" id="btnRegister" class="btn-submit">Kayıt Ol ve Başla</button>
+        </form>
+    </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+    function switchTab(tab) {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const tabLogin = document.getElementById('tabLogin');
+        const tabRegister = document.getElementById('tabRegister');
+
+        if (tab === 'login') {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            tabLogin.classList.add('active');
+            tabRegister.classList.remove('active');
+        } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            tabLogin.classList.remove('active');
+            tabRegister.classList.add('active');
+        }
+    }
+
+    function isGmail(email) {
+        return email.toLowerCase().endsWith('@gmail.com');
+    }
+
+    // KAYIT OLMA VE E-POSTA GÖNDERME İŞLEMİ
+    function handleRegister(e) {
+        e.preventDefault();
+
+        const fullName = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const target = document.getElementById('regTarget').value;
+        const registerBtn = document.getElementById('btnRegister');
+
+        if (!isGmail(email)) {
+            alert("Lütfen geçerli bir Gmail adresi giriniz.");
+            return;
+        }
+
+        registerBtn.disabled = true;
+        registerBtn.innerText = "Kayıt Yapılıyor ve E-posta Gönderiliyor...";
+
+        const userData = {
+            fullName: fullName,
+            email: email,
+            target: target,
+            createdAt: new Date().toISOString()
+        };
+
+        localStorage.setItem('yks_user', JSON.stringify(userData));
+
+        // EmailJS ile Hoş Geldin E-postası Gönderme
+        const templateParams = {
+            to_name: fullName,
+            to_email: email,
+            message: `Merhaba ${fullName}, YKS Akıllı Takip platformuna hesabınız başarıyla oluşturuldu! Hedef alanınız: ${target}. Başarılar dileriz!`
+        };
+
+        // EmailJS entegrasyonu (YOUR_SERVICE_ID ve YOUR_TEMPLATE_ID kısımlarını kendi panelinizden almalısınız)
+        emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+            .then(function(response) {
+                alert(`Hoş geldin, ${fullName}! Hesabın oluşturuldu ve ${email} adresine doğrulama/hoş geldin mesajı gönderildi.`);
+                window.location.href = 'dashboard.html';
+            }, function(error) {
+                console.log('E-posta gönderimi başarısız:', error);
+                // E-posta gönderiminde hata olsa bile kaydı tamamla
+                alert(`Hoş geldin, ${fullName}! Hesabın oluşturuldu.`);
+                window.location.href = 'dashboard.html';
+            });
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+
+        if (!isGmail(email)) {
+            alert("Lütfen geçerli bir Gmail adresi giriniz.");
+            return;
+        }
+
+        const existingUser = JSON.parse(localStorage.getItem('yks_user') || '{}');
+
+        if (!existingUser.fullName) {
+            const nameFromEmail = email.split('@')[0];
+            const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
+            
+            const userData = {
+                fullName: formattedName,
+                email: email,
+                target: "Sayısal"
+            };
+            localStorage.setItem('yks_user', JSON.stringify(userData));
+        }
+
+        window.location.href = 'dashboard.html';
+    }
+</script>
+
+</body>
+</html>

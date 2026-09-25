@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Günlük Test | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+       <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html" class="active">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>Günlük Test Takibi</h1>
+                <p>Her gün çözdüğün soru ve testleri kaydet, performansını izle.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">YKS Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET STATS -->
+        <div class="grid grid-4">
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Toplam Test</div>
+                    <div class="value" id="totalTests">0</div>
+                    <span class="small">Kaydedilen testler</span>
+                </div>
+                <div class="icon">📌</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Toplam Soru</div>
+                    <div class="value" id="totalQuestions">0</div>
+                    <span class="small">Çözülen sorular</span>
+                </div>
+                <div class="icon">❓</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Doğru Sayısı</div>
+                    <div class="value" id="totalCorrect">0</div>
+                    <span class="small">Toplam doğrular</span>
+                </div>
+                <div class="icon">✅</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Toplam Net</div>
+                    <div class="value" id="totalNet">0.00</div>
+                    <span class="small">Hesaplanan netler</span>
+                </div>
+                <div class="icon">📈</div>
+            </div>
+
+        </div>
+
+        <!-- TEST EKLE -->
+        <section class="card" style="margin-top:20px">
+
+            <div class="section-title">
+                <h2>Test Ekle</h2>
+                <span class="badge badge-good">Soru Kaydı</span>
+            </div>
+
+            <form id="testForm">
+
+                <div class="grid grid-2">
+
+                    <div class="field">
+                        <label for="testSubject">Ders</label>
+                        <select id="testSubject" required>
+                            <option value="">Ders Seçiniz</option>
+                            <option value="Türkçe">Türkçe</option>
+                            <option value="Matematik">Matematik</option>
+                            <option value="Geometri">Geometri</option>
+                            <option value="Fizik">Fizik</option>
+                            <option value="Kimya">Kimya</option>
+                            <option value="Biyoloji">Biyoloji</option>
+                            <option value="Tarih">Tarih</option>
+                            <option value="Coğrafya">Coğrafya</option>
+                            <option value="Felsefe">Felsefe</option>
+                            <option value="Din Kültürü">Din Kültürü</option>
+                            <option value="İngilizce">İngilizce</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="testName">Test / Konu Adı</label>
+                        <input id="testName" type="text" placeholder="Örn: Problemler Testi" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="questionCount">Soru Sayısı</label>
+                        <input id="questionCount" type="number" min="1" placeholder="Örn: 20" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="correctCount">Doğru</label>
+                        <input id="correctCount" type="number" min="0" placeholder="Örn: 15" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongCount">Yanlış</label>
+                        <input id="wrongCount" type="number" min="0" placeholder="Örn: 3" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="emptyCount">Boş</label>
+                        <input id="emptyCount" type="number" min="0" value="0" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="testDuration">Süre (Dakika - İsteğe Bağlı)</label>
+                        <input id="testDuration" type="number" min="0" placeholder="Örn: 25">
+                    </div>
+
+                    <div class="field">
+                        <label for="testDate">Tarih</label>
+                        <input id="testDate" type="date" required>
+                    </div>
+
+                </div>
+
+                <div style="margin-top:15px; display:flex; align-items:center; gap:15px;">
+                    <button class="btn btn-primary" type="submit">
+                        + Testi Kaydet
+                    </button>
+                    <span id="testMessage" class="small" style="color:var(--text-muted, #6b7280);"></span>
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- FİLTRELEME VE ARAMA -->
+        <section class="card" style="margin-top:20px">
+            <div class="section-title">
+                <h2>Filtrele ve Ara</h2>
+            </div>
+            <div class="grid grid-2">
+                <div class="field">
+                    <label for="searchQuery">Arama Yap</label>
+                    <input type="text" id="searchQuery" placeholder="Konu veya test adı ara...">
+                </div>
+                <div class="field">
+                    <label for="filterSubject">Ders Filtresi</label>
+                    <select id="filterSubject">
+                        <option value="all">Tüm Dersler</option>
+                        <option value="Türkçe">Türkçe</option>
+                        <option value="Matematik">Matematik</option>
+                        <option value="Geometri">Geometri</option>
+                        <option value="Fizik">Fizik</option>
+                        <option value="Kimya">Kimya</option>
+                        <option value="Biyoloji">Biyoloji</option>
+                        <option value="Tarih">Tarih</option>
+                        <option value="Coğrafya">Coğrafya</option>
+                        <option value="Felsefe">Felsefe</option>
+                        <option value="Din Kültürü">Din Kültürü</option>
+                        <option value="İngilizce">İngilizce</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEST GEÇMİŞİ -->
+        <section class="card" style="margin-top:20px">
+
+            <div class="section-title">
+                <h2>Test Geçmişi</h2>
+                <div>
+                    <button class="btn btn-soft" id="exportTests">JSON İndir</button>
+                    <button class="btn btn-soft" id="clearTests">Tümünü Sil</button>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Ders</th>
+                            <th>Test / Konu</th>
+                            <th>Soru</th>
+                            <th>Doğru</th>
+                            <th>Yanlış</th>
+                            <th>Boş</th>
+                            <th>Net</th>
+                            <th>Başarı %</th>
+                            <th>Süre</th>
+                            <th>Tarih</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="testTable"></tbody>
+                </table>
+            </div>
+
+            <div id="emptyTests" class="empty-state">
+                Henüz test kaydı bulunmuyor.
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    const testForm = document.getElementById("testForm");
+    const testTable = document.getElementById("testTable");
+    const emptyTests = document.getElementById("emptyTests");
+    const testMessage = document.getElementById("testMessage");
+
+    const questionCount = document.getElementById("questionCount");
+    const correctCount = document.getElementById("correctCount");
+    const wrongCount = document.getElementById("wrongCount");
+    const emptyCount = document.getElementById("emptyCount");
+    const testDuration = document.getElementById("testDuration");
+
+    let tests = JSON.parse(
+        localStorage.getItem("yks_daily_tests") || "[]"
+    );
+
+    // PROFİL SENKRONİZASYONU
+    function updateUserProfile() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Kullanıcı";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "YKS";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => {
+            el.textContent = fullName;
+        });
+
+        document.querySelectorAll("[data-avatar]").forEach(el => {
+            el.textContent = initials;
+        });
+    }
+
+    function escapeHTML(str) {
+        return String(str || "").replace(/[&<>'"]/g, 
+            tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag] || tag)
+        );
+    }
+
+    function calculateNet(correct, wrong) {
+        return correct - (wrong / 4);
+    }
+
+    function updateStats() {
+        const totalQuestions = tests.reduce(
+            (sum, test) => sum + test.questions, 0
+        );
+
+        const totalCorrect = tests.reduce(
+            (sum, test) => sum + test.correct, 0
+        );
+
+        const totalNet = tests.reduce(
+            (sum, test) => sum + test.net, 0
+        );
+
+        document.getElementById("totalTests").textContent = tests.length;
+        document.getElementById("totalQuestions").textContent = totalQuestions;
+        document.getElementById("totalCorrect").textContent = totalCorrect;
+        document.getElementById("totalNet").textContent = totalNet.toFixed(2);
+    }
+
+    function renderTests() {
+        testTable.innerHTML = "";
+
+        const searchQuery = document.getElementById("searchQuery").value.toLowerCase();
+        const subjectFilter = document.getElementById("filterSubject").value;
+
+        const filtered = tests.filter(test => {
+            if (subjectFilter !== "all" && test.subject !== subjectFilter) return false;
+            if (searchQuery && !test.name.toLowerCase().includes(searchQuery)) return false;
+            return true;
+        });
+
+        emptyTests.style.display = filtered.length === 0 ? "block" : "none";
+
+        filtered.forEach(test => {
+            const row = document.createElement("tr");
+            const successRate = test.questions > 0 ? ((test.correct / test.questions) * 100).toFixed(0) : 0;
+
+            row.innerHTML = `
+                <td><strong>${escapeHTML(test.subject)}</strong></td>
+                <td>${escapeHTML(test.name)}</td>
+                <td>${test.questions}</td>
+                <td><span style="color:#10b981; font-weight:600;">${test.correct}</span></td>
+                <td><span style="color:#ef4444; font-weight:600;">${test.wrong}</span></td>
+                <td>${test.empty}</td>
+                <td><strong>${test.net.toFixed(2)}</strong></td>
+                <td>%${successRate}</td>
+                <td>${test.duration ? test.duration + ' dk' : '-'}</td>
+                <td>${escapeHTML(test.date)}</td>
+                <td>
+                    <button
+                        class="btn btn-soft"
+                        type="button"
+                        style="padding: 4px 10px; font-size: 12px;"
+                        data-delete-test="${test.id}">
+                        Sil
+                    </button>
+                </td>
+            `;
+
+            testTable.appendChild(row);
+        });
+
+        document
+            .querySelectorAll("[data-delete-test]")
+            .forEach(button => {
+                button.addEventListener("click", () => {
+                    if (!confirm("Bu test kaydını silmek istediğinize emin misiniz?")) return;
+
+                    const id = Number(button.dataset.deleteTest);
+                    tests = tests.filter(test => test.id !== id);
+
+                    localStorage.setItem(
+                        "yks_daily_tests",
+                        JSON.stringify(tests)
+                    );
+
+                    renderAll();
+                });
+            });
+    }
+
+    function renderAll() {
+        updateStats();
+        renderTests();
+    }
+
+    testForm.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const questions = Number(questionCount.value);
+        const correct = Number(correctCount.value);
+        const wrong = Number(wrongCount.value);
+        const empty = Number(emptyCount.value);
+        const duration = testDuration.value ? Number(testDuration.value) : null;
+
+        if (correct + wrong + empty !== questions) {
+            testMessage.style.color = "#ef4444";
+            testMessage.textContent = "Hata: Doğru, yanlış ve boş toplamı soru sayısına eşit olmalıdır!";
+            return;
+        }
+
+        const test = {
+            id: Date.now(),
+            subject: document.getElementById("testSubject").value,
+            name: document.getElementById("testName").value.trim(),
+            questions,
+            correct,
+            wrong,
+            empty,
+            duration,
+            net: calculateNet(correct, wrong),
+            date: document.getElementById("testDate").value
+        };
+
+        tests.unshift(test);
+
+        localStorage.setItem(
+            "yks_daily_tests",
+            JSON.stringify(tests)
+        );
+
+        testMessage.style.color = "#10b981";
+        testMessage.textContent = "Test başarıyla kaydedildi.";
+
+        testForm.reset();
+        document.getElementById("emptyCount").value = 0;
+
+        document.getElementById("testDate").value =
+            new Date().toISOString().split("T")[0];
+
+        renderAll();
+
+        setTimeout(() => {
+            testMessage.textContent = "";
+        }, 3000);
+    });
+
+    document.getElementById("searchQuery").addEventListener("input", renderTests);
+    document.getElementById("filterSubject").addEventListener("change", renderTests);
+
+    document.getElementById("clearTests").addEventListener("click", function() {
+        if (!tests.length) return alert("Silinecek test bulunamadı.");
+        if (!confirm("Tüm test geçmişi silinsin mi?")) return;
+        tests = [];
+        localStorage.setItem("yks_daily_tests", JSON.stringify(tests));
+        renderAll();
+    });
+
+    document.getElementById("exportTests").addEventListener("click", function() {
+        if (!tests.length) return alert("Aktarılacak veri bulunamadı.");
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tests, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "gunluk_testler.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUserProfile();
+        document.getElementById("testDate").value =
+            new Date().toISOString().split("T")[0];
+        renderAll();
+    });
+</script>
+
+</body>
+</html>

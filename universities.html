@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üniversite & Bölüm | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+         <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html" class="active">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Üniversite & Bölüm Arama</h1>
+                <p>Hedefindeki üniversitelerin taban puan ve sıralamalarını incele.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">YKS Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARAMA VE FİLTRELEME -->
+        <section class="card" style="margin-bottom: 20px;">
+            <div class="grid grid-2" style="gap: 15px;">
+                <div class="field">
+                    <label for="searchInput">Üniversite veya Bölüm Ara</label>
+                    <input type="text" id="searchInput" placeholder="Örn: Bilgisayar Mühendisliği veya İTÜ..." style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;" oninput="filterUniversities()">
+                </div>
+
+                <div class="field">
+                    <label for="scoreTypeFilter">Puan Türü</label>
+                    <select id="scoreTypeFilter" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;" onchange="filterUniversities()">
+                        <option value="ALL">Tümü</option>
+                        <option value="SAY">Sayısal (SAY)</option>
+                        <option value="EA">Eşit Ağırlık (EA)</option>
+                        <option value="SÖZ">Sözel (SÖZ)</option>
+                        <option value="DİL">Yabancı Dil (DİL)</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÜNİVERSİTE LİSTESİ TABLOSU -->
+        <section class="card">
+            <div class="section-title">
+                <h2>Üniversite Taban Puanları ve Sıralamaları</h2>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Üniversite</th>
+                            <th>Bölüm</th>
+                            <th>Puan Türü</th>
+                            <th>Kontenjan</th>
+                            <th>Son Kişi Sıralaması</th>
+                            <th>Taban Puan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="uniList">
+                        <!-- JAVASCRIPT İLE DOLDURULACAK -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+    // GENİŞLETİLMİŞ ÜNİVERSİTE VERİLERİ
+    const sampleUniversities = [
+        { uni: "İstanbul Teknik Üniversitesi", dept: "Bilgisayar Mühendisliği", type: "SAY", quota: "90+3", rank: "4.250", score: "525.40" },
+        { uni: "Boğaziçi Üniversitesi", dept: "İşletme", type: "EA", quota: "100+3", rank: "1.120", score: "510.15" },
+        { uni: "Middle East Technical University (ODTÜ)", dept: "Elektrik-Elektronik Müh.", type: "SAY", quota: "120+4", rank: "2.100", score: "532.80" },
+        { uni: "Galatasaray Üniversitesi", dept: "Hukuk", type: "EA", quota: "50+2", rank: "850", score: "518.60" },
+        { uni: "İstanbul Üniversitesi", dept: "Tıp", type: "SAY", quota: "300+8", rank: "3.400", score: "528.10" },
+        { uni: "Piri Reis Üniversitesi", dept: "Gemi Makineleri İşletme Mühendisliği", type: "SAY", quota: "61", rank: "147.672", score: "364.86" },
+        { uni: "Hacettepe Üniversitesi", dept: "İngilizce Öğretmenliği", type: "DİL", quota: "80+2", rank: "5.100", score: "475.20" },
+        { uni: "Marmara Üniversitesi", dept: "Tarih", type: "SÖZ", quota: "70+2", rank: "18.500", score: "412.30" },
+        { uni: "Bilkent Üniversitesi", dept: "Endüstri Mühendisliği (Burslu)", type: "SAY", quota: "30+1", rank: "1.850", score: "535.10" },
+        { uni: "Ankara Üniversitesi", dept: "Siyaset Bilimi ve Kamu Yönetimi", type: "EA", quota: "90+3", rank: "12.400", score: "435.80" },
+        { uni: "Ege Üniversitesi", dept: "Diş Hekimliği", type: "SAY", quota: "140+4", rank: "19.200", score: "492.50" },
+        { uni: "Koç Üniversitesi", dept: "Psikoloji (Burslu)", type: "EA", quota: "15+1", rank: "420", score: "528.90" },
+        { uni: "Yıldız Teknik Üniversitesi", dept: "Mimarlık", type: "SAY", quota: "110+3", rank: "45.300", score: "438.20" },
+        { uni: "Gazi Üniversitesi", dept: "Türkçe Öğretmenliği", type: "SÖZ", quota: "60+2", rank: "9.800", score: "432.15" },
+        { uni: "Dokuz Eylül Üniversitesi", dept: "Yazılım Mühendisliği", type: "SAY", quota: "80+2", rank: "28.600", score: "468.75" },
+        { uni: "Sabancı Üniversitesi", dept: "Mühendislik ve Doğa Bilimleri Programları (Burslu)", type: "SAY", quota: "45+2", rank: "980", score: "541.30" },
+        { uni: "Anadolu Üniversitesi", dept: "Çizgi Film ve Animasyon", type: "SÖZ", quota: "40+1", rank: "4.300", score: "452.60" },
+        { uni: "İstanbul Üniversitesi-Cerrahpaşa", dept: "Fizyoterapi ve Rehabilitasyon", type: "SAY", quota: "85+3", rank: "92.100", score: "398.40" },
+        { uni: "TED Üniversitesi", dept: "İngiliz Dili ve Edebiyatı (Burslu)", type: "DİL", quota: "10+1", rank: "8.900", score: "458.30" },
+        { uni: "İzmir Yüksek Teknoloji Enstitüsü (İYTE)", dept: "Fizik", type: "SAY", quota: "40+1", rank: "78.400", score: "408.90" }
+    ];
+
+    // PROFIL SENKRONIZASYONU
+    function updateUserProfile() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Kullanıcı";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "YKS";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => {
+            el.textContent = fullName;
+        });
+
+        document.querySelectorAll("[data-avatar]").forEach(el => {
+            el.textContent = initials;
+        });
+    }
+
+    // ÜNİVERSİTELERİ LİSTELE / FİLTRELE
+    function filterUniversities() {
+        const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
+        const scoreTypeVal = document.getElementById("scoreTypeFilter").value;
+
+        const filtered = sampleUniversities.filter(item => {
+            const matchesSearch = item.uni.toLowerCase().includes(searchVal) || item.dept.toLowerCase().includes(searchVal);
+            const matchesType = scoreTypeVal === "ALL" || item.type === scoreTypeVal;
+            return matchesSearch && matchesType;
+        });
+
+        const tbody = document.getElementById("uniList");
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6">Aramanızla eşleşen üniversite veya bölüm bulunamadı.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(item => `
+            <tr>
+                <td><strong>${escapeHTML(item.uni)}</strong></td>
+                <td>${escapeHTML(item.dept)}</td>
+                <td><span class="badge badge-good">${escapeHTML(item.type)}</span></td>
+                <td>${escapeHTML(item.quota)}</td>
+                <td><strong>${escapeHTML(item.rank)}</strong></td>
+                <td>${escapeHTML(item.score)}</td>
+            </tr>
+        `).join("");
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, 
+            tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag] || tag)
+        );
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUserProfile();
+        filterUniversities();
+    });
+</script>
+
+</body>
+</html>

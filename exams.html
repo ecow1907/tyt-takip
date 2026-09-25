@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denemelerim | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        /* Tasarımı Destekleyen Ek Modül ve Detay Stilleri */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-card {
+            background: #ffffff;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-filter {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .btn-filter.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .target-progress-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html" class="active">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>Deneme Takibi</h1>
+                <p>TYT ve AYT deneme sonuçlarını kaydet, net gelişimini detaylı analiz et.</p>
+            </div>
+
+            <!-- KULLANICI BİLGİSİ -->
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">YKS Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET KARTLARI -->
+        <div class="grid grid-4">
+            <div class="card stat">
+                <div>
+                    <div class="label">Toplam Deneme</div>
+                    <div class="value" id="totalExams">0</div>
+                    <span class="small">Kaydedilen sınavlar</span>
+                </div>
+                <div class="icon">📝</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Son TYT Neti</div>
+                    <div class="value" id="lastTyt">-</div>
+                    <span class="small" id="maxTytBadge">En yüksek: -</span>
+                </div>
+                <div class="icon">T</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Son AYT Neti</div>
+                    <div class="value" id="lastAyt">-</div>
+                    <span class="small" id="maxAytBadge">En yüksek: -</span>
+                </div>
+                <div class="icon">A</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Genel Ortalama</div>
+                    <div class="value" id="averageNet">0.00</div>
+                    <span class="small">Tüm sınavlar ortalaması</span>
+                </div>
+                <div class="icon">📈</div>
+            </div>
+        </div>
+
+        <!-- HEDEF HESAPLAMA VE İLERLEME PANENİ -->
+        <div class="grid grid-2" style="margin-top:20px;">
+            <div class="card">
+                <h3>TYT Hedef İlerlemesi</h3>
+                <div class="target-progress-box">
+                    <div class="kpi-line">
+                        <span>Son TYT / Hedef Net</span>
+                        <b id="tytTargetText">0 / 85.00</b>
+                    </div>
+                    <div class="progress">
+                        <span id="barTytTarget" style="width: 0%;"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>AYT Hedef İlerlemesi</h3>
+                <div class="target-progress-box">
+                    <div class="kpi-line">
+                        <span>Son AYT / Hedef Net</span>
+                        <b id="aytTargetText">0 / 60.00</b>
+                    </div>
+                    <div class="progress">
+                        <span id="barAytTarget" style="width: 0%; background: #059669;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DENEME EKLEME -->
+        <section class="card" style="margin-top:20px">
+            <div class="section-title">
+                <h2>Yeni Deneme Sonucu Ekle</h2>
+                <span class="badge badge-good">Net Hesaplama Aktif</span>
+            </div>
+
+            <form id="examForm">
+                <div class="grid grid-2">
+                    <div class="field">
+                        <label for="examType">Sınav türü</label>
+                        <select id="examType" required>
+                            <option value="TYT">TYT</option>
+                            <option value="AYT">AYT (Sayısal / Eşit Ağırlık / Sözel)</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="examName">Deneme adı</label>
+                        <input type="text" id="examName" placeholder="Örn: Türkiye Geneli TYT-1" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="examDate">Tarih</label>
+                        <input type="date" id="examDate" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="examYayın">Yayın / Kurum Adı (Opsiyonel)</label>
+                        <input type="text" id="examYayın" placeholder="Örn: 3D Yayınları, Özdebir vb.">
+                    </div>
+                </div>
+
+                <h3 style="margin-top:25px">Ders Sonuçları</h3>
+                <p class="small">
+                    Doğru, yanlış ve boş sayılarını giriniz. Netler 4 yanlış 1 doğruyu götürecek şekilde hesaplanır. <br>
+                    <strong>Net = Doğru - (Yanlış / 4)</strong>
+                </p>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ders</th>
+                                <th>Doğru</th>
+                                <th>Yanlış</th>
+                                <th>Boş</th>
+                                <th>Net</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectRows">
+                            <!-- JAVASCRIPT İLE DOLDURULACAK -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-2" style="margin-top:20px; align-items: center;">
+                    <div class="card" style="background:#f8fafc; margin:0;">
+                        <div class="label">Hesaplanan Toplam Net</div>
+                        <div class="value" id="calculatedTotal">0.00</div>
+                    </div>
+                    <div>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem;">
+                            <input type="checkbox" id="autoSyncWrong" checked>
+                            <span>Yanlış soruları 'Yanlış Analizi' kutusuna hatırlatma olarak aktar</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top:20px">
+                    + Deneme Sonucunu Kaydet
+                </button>
+            </form>
+        </section>
+
+        <!-- DENEME GEÇMİŞİ -->
+        <section class="card" style="margin-top:20px">
+            <div class="section-title">
+                <h2>Deneme Geçmişim</h2>
+                <button class="btn btn-soft" id="clearExams">Tümünü Sil</button>
+            </div>
+
+            <!-- FİLTRELEME ÇUBUĞU -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <button type="button" class="btn-filter active" onclick="filterExams('ALL', this)">Tümü</button>
+                    <button type="button" class="btn-filter" onclick="filterExams('TYT', this)">TYT</button>
+                    <button type="button" class="btn-filter" onclick="filterExams('AYT', this)">AYT</button>
+                </div>
+                <input type="text" id="searchExam" placeholder="Deneme adı ile ara..." onkeyup="renderHistory()" style="padding:6px 12px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.85rem; width:200px;">
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Deneme Adı</th>
+                            <th>Tür</th>
+                            <th>Toplam Net</th>
+                            <th>Detay</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="examHistory">
+                        <tr>
+                            <td colspan="6">Henüz deneme eklenmedi.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- DERS BAZLI DETAY MODALI (YENİ EKLEME) -->
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-card">
+        <div class="section-title">
+            <h3 id="modalExamTitle">Deneme Detayı</h3>
+            <button class="btn btn-soft" onclick="closeModal()">Kapat</button>
+        </div>
+        <p class="small" id="modalExamMeta" style="margin-bottom:15px; color:#64748b;"></p>
+
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Ders</th>
+                        <th>Doğru</th>
+                        <th>Yanlış</th>
+                        <th>Boş</th>
+                        <th>Net</th>
+                    </tr>
+                </thead>
+                <tbody id="modalSubjectBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script src="assets/app.js"></script>
+
+<script>
+    const EXAM_STORAGE = "yks_exams";
+    let exams = [];
+    let currentFilter = "ALL";
+
+    // LocalStorage veri okuma
+    try {
+        exams = JSON.parse(localStorage.getItem(EXAM_STORAGE) || "[]");
+    } catch (e) {
+        exams = [];
+    }
+
+    // PROFIL SENKRONIZASYONU
+    function updateUserProfile() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Kullanıcı";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "YKS";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => {
+            el.textContent = fullName;
+        });
+
+        document.querySelectorAll("[data-avatar]").forEach(el => {
+            el.textContent = initials;
+        });
+    }
+
+    // Tüm Ders Tanımlamaları
+    const subjects = [
+        // TYT
+        { name: "Türkçe", max: 40, group: "TYT" },
+        { name: "Matematik", max: 40, group: "TYT" },
+        { name: "Fen Bilimleri", max: 20, group: "TYT" },
+        { name: "Sosyal Bilimler", max: 20, group: "TYT" },
+
+        // AYT
+        { name: "AYT Matematik", max: 40, group: "AYT" },
+        { name: "AYT Fizik", max: 14, group: "AYT" },
+        { name: "AYT Kimya", max: 13, group: "AYT" },
+        { name: "AYT Biyoloji", max: 13, group: "AYT" },
+        { name: "Edebiyat - Sosyal 1", max: 40, group: "AYT" },
+        { name: "Sosyal 2", max: 40, group: "AYT" }
+    ];
+
+    const examType = document.getElementById("examType");
+    const subjectRows = document.getElementById("subjectRows");
+    const examForm = document.getElementById("examForm");
+
+    // Bugünün tarihini varsayılan yap
+    document.getElementById("examDate").valueAsDate = new Date();
+
+    function escapeHTML(value) {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // Ders satırlarını render et
+    function renderSubjects() {
+        const type = examType.value;
+        const filtered = subjects.filter(subject => subject.group === type);
+
+        subjectRows.innerHTML = filtered.map((subject) => `
+            <tr>
+                <td>
+                    <strong>${escapeHTML(subject.name)}</strong>
+                    <div class="small">Maksimum ${subject.max} soru</div>
+                </td>
+                <td>
+                    <input type="number" class="subject-correct" data-max="${subject.max}" min="0" max="${subject.max}" value="0" style="width:75px" required>
+                </td>
+                <td>
+                    <input type="number" class="subject-wrong" data-max="${subject.max}" min="0" max="${subject.max}" value="0" style="width:75px" required>
+                </td>
+                <td>
+                    <input type="number" class="subject-empty" data-max="${subject.max}" min="0" max="${subject.max}" value="0" style="width:75px" required>
+                </td>
+                <td>
+                    <strong class="subject-net">0.00</strong>
+                </td>
+            </tr>
+        `).join("");
+
+        // Dinamik Event Listener Ekleme
+        subjectRows.querySelectorAll("input").forEach(input => {
+            input.addEventListener("input", updateNet);
+        });
+
+        updateNet();
+    }
+
+    // Anlık Net Hesaplama
+    function updateNet() {
+        let total = 0;
+        const rows = subjectRows.querySelectorAll("tr");
+
+        rows.forEach(row => {
+            const correctInput = row.querySelector(".subject-correct");
+            const wrongInput = row.querySelector(".subject-wrong");
+            const emptyInput = row.querySelector(".subject-empty");
+            const netElement = row.querySelector(".subject-net");
+
+            const correct = Math.max(0, Number(correctInput.value) || 0);
+            const wrong = Math.max(0, Number(wrongInput.value) || 0);
+            const empty = Math.max(0, Number(emptyInput.value) || 0);
+            const max = Number(correctInput.dataset.max);
+
+            if (correct + wrong + empty > max) {
+                netElement.textContent = "Hata!";
+                netElement.style.color = "#dc2626";
+            } else {
+                const net = Math.max(0, correct - (wrong / 4));
+                netElement.textContent = net.toFixed(2);
+                netElement.style.color = "inherit";
+                total += net;
+            }
+        });
+
+        document.getElementById("calculatedTotal").textContent = total.toFixed(2);
+    }
+
+    function saveExams() {
+        localStorage.setItem(EXAM_STORAGE, JSON.stringify(exams));
+    }
+
+    function updateSummary() {
+        document.getElementById("totalExams").textContent = exams.length;
+
+        const tytExams = exams.filter(e => e.type === "TYT");
+        const aytExams = exams.filter(e => e.type === "AYT");
+
+        const lastTytVal = tytExams.length ? Number(tytExams[tytExams.length - 1].totalNet) : 0;
+        const lastAytVal = aytExams.length ? Number(aytExams[aytExams.length - 1].totalNet) : 0;
+
+        document.getElementById("lastTyt").textContent = tytExams.length ? lastTytVal.toFixed(2) : "-";
+        document.getElementById("lastAyt").textContent = aytExams.length ? lastAytVal.toFixed(2) : "-";
+
+        // En Yüksek Netler
+        if (tytExams.length) {
+            const maxTyt = Math.max(...tytExams.map(e => Number(e.totalNet || 0)));
+            document.getElementById("maxTytBadge").textContent = `En yüksek: ${maxTyt.toFixed(2)}`;
+        }
+        if (aytExams.length) {
+            const maxAyt = Math.max(...aytExams.map(e => Number(e.totalNet || 0)));
+            document.getElementById("maxAytBadge").textContent = `En yüksek: ${maxAyt.toFixed(2)}`;
+        }
+
+        if (exams.length) {
+            const total = exams.reduce((sum, e) => sum + Number(e.totalNet || 0), 0);
+            document.getElementById("averageNet").textContent = (total / exams.length).toFixed(2);
+        } else {
+            document.getElementById("averageNet").textContent = "0.00";
+        }
+
+        // Hedef Barları İlerlemesi (Varsayılan Hedef: TYT 85, AYT 60)
+        const targetTyt = 85;
+        const targetAyt = 60;
+        
+        const tytPercent = Math.min(100, Math.round((lastTytVal / targetTyt) * 100));
+        const aytPercent = Math.min(100, Math.round((lastAytVal / targetAyt) * 100));
+
+        document.getElementById("tytTargetText").textContent = `${lastTytVal.toFixed(2)} / ${targetTyt}.00`;
+        document.getElementById("barTytTarget").style.width = `${tytPercent}%`;
+
+        document.getElementById("aytTargetText").textContent = `${lastAytVal.toFixed(2)} / ${targetAyt}.00`;
+        document.getElementById("barAytTarget").style.width = `${aytPercent}%`;
+    }
+
+    function filterExams(type, btnElem) {
+        currentFilter = type;
+        document.querySelectorAll(".btn-filter").forEach(b => b.classList.remove("active"));
+        if(btnElem) btnElem.classList.add("active");
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const history = document.getElementById("examHistory");
+        const searchQuery = document.getElementById("searchExam").value.toLowerCase();
+
+        let filteredList = exams.slice().reverse();
+
+        if (currentFilter !== "ALL") {
+            filteredList = filteredList.filter(e => e.type === currentFilter);
+        }
+
+        if (searchQuery.trim() !== "") {
+            filteredList = filteredList.filter(e => e.name.toLowerCase().includes(searchQuery));
+        }
+
+        if (!filteredList.length) {
+            history.innerHTML = `<tr><td colspan="6">Aramanıza veya filtreye uygun deneme kaydı bulunamadı.</td></tr>`;
+            updateSummary();
+            return;
+        }
+
+        history.innerHTML = filteredList.map(exam => `
+            <tr>
+                <td>${escapeHTML(exam.date)}</td>
+                <td><strong>${escapeHTML(exam.name)}</strong> ${exam.publisher ? `<div class="small" style="color:#64748b;">${escapeHTML(exam.publisher)}</div>` : ''}</td>
+                <td><span class="badge ${exam.type === 'TYT' ? 'badge-good' : 'badge-warn'}">${escapeHTML(exam.type)}</span></td>
+                <td><strong>${Number(exam.totalNet).toFixed(2)}</strong></td>
+                <td>
+                    <button type="button" class="btn btn-soft" onclick="viewDetail('${exam.id}')">🔍 İncele</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-soft" onclick="deleteExam('${exam.id}')" style="color:#dc2626;">Sil</button>
+                </td>
+            </tr>
+        `).join("");
+
+        updateSummary();
+    }
+
+    // Modal Pencere İşlemleri
+    window.viewDetail = function(id) {
+        const exam = exams.find(e => e.id === id);
+        if (!exam) return;
+
+        document.getElementById("modalExamTitle").textContent = exam.name;
+        document.getElementById("modalExamMeta").textContent = `Tarih: ${exam.date} | Tür: ${exam.type} | Toplam Net: ${exam.totalNet.toFixed(2)}`;
+
+        const tbody = document.getElementById("modalSubjectBody");
+        tbody.innerHTML = (exam.results || []).map(r => `
+            <tr>
+                <td><strong>${escapeHTML(r.subject)}</strong></td>
+                <td style="color:#16a34a;">${r.correct}</td>
+                <td style="color:#dc2626;">${r.wrong}</td>
+                <td style="color:#64748b;">${r.empty}</td>
+                <td><strong>${r.net.toFixed(2)}</strong></td>
+            </tr>
+        `).join("");
+
+        document.getElementById("detailModal").classList.add("active");
+    };
+
+    window.closeModal = function() {
+        document.getElementById("detailModal").classList.remove("active");
+    };
+
+    // Form Gönderimi
+    examForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const type = examType.value;
+        const rows = subjectRows.querySelectorAll("tr");
+        const results = [];
+        let totalNet = 0;
+        let hasError = false;
+        let totalWrongCount = 0;
+
+        rows.forEach(row => {
+            if (hasError) return;
+
+            const subjectName = row.querySelector("strong").textContent;
+            const correct = Math.max(0, Number(row.querySelector(".subject-correct").value) || 0);
+            const wrong = Math.max(0, Number(row.querySelector(".subject-wrong").value) || 0);
+            const empty = Math.max(0, Number(row.querySelector(".subject-empty").value) || 0);
+            const max = Number(row.querySelector(".subject-correct").dataset.max);
+
+            if (correct + wrong + empty > max) {
+                alert(`${subjectName} dersinde girdiğiniz toplam soru sayısı (${correct + wrong + empty}), maksimum soru sayısını (${max}) aşıyor.`);
+                hasError = true;
+                return;
+            }
+
+            const net = Math.max(0, correct - (wrong / 4));
+            totalNet += net;
+            totalWrongCount += wrong;
+
+            results.push({ subject: subjectName, correct, wrong, empty, net: Number(net.toFixed(2)) });
+        });
+
+        if (hasError) return;
+
+        const exam = {
+            id: Date.now().toString(),
+            type,
+            name: document.getElementById("examName").value.trim(),
+            publisher: document.getElementById("examYayın").value.trim(),
+            date: document.getElementById("examDate").value,
+            totalNet: Number(totalNet.toFixed(2)),
+            results,
+            createdAt: new Date().toISOString()
+        };
+
+        exams.push(exam);
+        saveExams();
+
+        // Otomatik Yanlış Aktarımı
+        if (document.getElementById("autoSyncWrong").checked && totalWrongCount > 0) {
+            let existingWrongs = JSON.parse(localStorage.getItem("yks_wrong_questions") || "[]");
+            existingWrongs.push({
+                id: Date.now().toString(),
+                source: exam.name,
+                count: totalWrongCount,
+                reviewed: false,
+                date: exam.date
+            });
+            localStorage.setItem("yks_wrong_questions", JSON.stringify(existingWrongs));
+        }
+
+        renderHistory();
+
+        alert("Deneme sonucu başarıyla kaydedildi!");
+        examForm.reset();
+        document.getElementById("examDate").valueAsDate = new Date();
+        renderSubjects();
+    });
+
+    window.deleteExam = function(id) {
+        if (confirm("Bu denemeyi silmek istediğinize emin misiniz?")) {
+            exams = exams.filter(e => e.id !== id);
+            saveExams();
+            renderHistory();
+        }
+    };
+
+    document.getElementById("clearExams").addEventListener("click", function() {
+        if (!exams.length) return alert("Silinecek deneme bulunmuyor.");
+        if (confirm("Tüm deneme sonuçları silinsin mi?")) {
+            exams = [];
+            saveExams();
+            renderHistory();
+        }
+    });
+
+    examType.addEventListener("change", renderSubjects);
+
+    // Başlangıç Yüklemesi
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUserProfile();
+        renderSubjects();
+        renderHistory();
+    });
+</script>
+
+</body>
+</html>

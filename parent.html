@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veli Paneli | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .parent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .student-info-card {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .student-info-card h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
+        }
+
+        .badge-status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .report-table th,
+        .report-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .report-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* EKLENEN YENİ CSS BİLEŞENLERİ */
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #334155;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+
+        .btn-action-primary {
+            background: #4f46e5;
+            color: white;
+            border: none;
+        }
+
+        .btn-action-primary:hover {
+            background: #4338ca;
+        }
+
+        .progress-bar-bg {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .subject-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .subject-item {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .weekly-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .day-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 8px;
+            border-radius: 10px;
+        }
+
+        .day-box.active-day {
+            background: #eef2ff;
+            border-color: #6366f1;
+        }
+
+        .day-name {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .day-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
+            margin-top: 10px;
+        }
+
+        .chat-message {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            line-height: 1.4;
+            max-width: 85%;
+        }
+
+        .chat-message.incoming {
+            background: #f1f5f9;
+            color: #334155;
+            align-self: flex-start;
+        }
+
+        .chat-message.outgoing {
+            background: #4f46e5;
+            color: white;
+            align-self: flex-end;
+        }
+
+        /* MODAL PENCERELERİ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html" class="active">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>Veli Takip Paneli</h1>
+                <p>Öğrencinizin haftalık çalışma performansını ve sınav gelişimini buradan takip edin.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">Öğrenci Velisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HIZLI EYLEM BUTONLARI -->
+        <div class="action-bar">
+            <button class="btn-action" onclick="downloadReport()">📄 Haftalık Rapor İndir (PDF)</button>
+            <button class="btn-action" onclick="openSmsSettings()">📱 SMS Bildirim Ayarları</button>
+            <button class="btn-action btn-action-primary" onclick="openMessageModal()">💬 Danışman Öğretmene Yaz</button>
+        </div>
+
+        <!-- ÖĞRENCİ ÖZET KARTI -->
+        <div class="student-info-card">
+            <div>
+                <span class="badge-status">🎯 Hedef: Tıp Fakültesi / Mühendislik</span>
+                <h2 style="margin-top: 10px;" id="parentStudentName">Öğrenci: --</h2>
+                <p style="margin: 0; opacity: 0.9;">Sınıf / Alan: 12. Sınıf - Sayısal</p>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.9rem; opacity: 0.9;">Haftalık Çalışma Disiplini</div>
+                <div style="font-size: 1.8rem; font-weight: 700;">%92 Başarı</div>
+            </div>
+        </div>
+
+        <!-- PERFORMANS METRİKLERİ -->
+        <div class="parent-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #e0e7ff; color: #4338ca;">⏱️</div>
+                <div>
+                    <div style="color: #64748b; font-size: 0.85rem;">Bu Haftaki Çalışma</div>
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">28 Saat 40 Dk</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #dcfce7; color: #15803d;">📚</div>
+                <div>
+                    <div style="color: #64748b; font-size: 0.85rem;">Çözülen Soru Sayısı</div>
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">1.450 Soru</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #fef3c7; color: #b45309;">📊</div>
+                <div>
+                    <div style="color: #64748b; font-size: 0.85rem;">Son TYT Neti</div>
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">84.5 Net</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #f3e8ff; color: #6b21a8;">🎯</div>
+                <div>
+                    <div style="color: #64748b; font-size: 0.85rem;">Program Tamamlama</div>
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">%88</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HAFTALIK GÜNLÜK ÇALIŞMA BÖLÜMÜ -->
+        <div class="card" style="margin-bottom: 25px;">
+            <h2 style="font-size: 1.1rem; margin-bottom: 5px; color: #1e293b;">📅 Bu Haftanın Günlük Çalışma Saatleri</h2>
+            <p style="color: #64748b; font-size: 0.88rem; margin-bottom: 15px;">Öğrencinizin gün gün sisteme kaydettiği toplam odaklanma süreleri.</p>
+            <div class="weekly-days">
+                <div class="day-box active-day">
+                    <div class="day-name">Pzt</div>
+                    <div class="day-value">4.5 Saat</div>
+                </div>
+                <div class="day-box active-day">
+                    <div class="day-name">Sal</div>
+                    <div class="day-value">5.0 Saat</div>
+                </div>
+                <div class="day-box active-day">
+                    <div class="day-name">Çar</div>
+                    <div class="day-value">3.8 Saat</div>
+                </div>
+                <div class="day-box active-day">
+                    <div class="day-name">Per</div>
+                    <div class="day-value">4.2 Saat</div>
+                </div>
+                <div class="day-box active-day">
+                    <div class="day-name">Cum</div>
+                    <div class="day-value">5.5 Saat</div>
+                </div>
+                <div class="day-box active-day">
+                    <div class="day-name">Cmt</div>
+                    <div class="day-value">5.6 Saat</div>
+                </div>
+                <div class="day-box">
+                    <div class="day-name">Paz</div>
+                    <div class="day-value">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SON DENEME SONUÇLARI VE HAFTALIK ÖZET -->
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px;">
+            
+            <!-- TABLO: DENEME DENETİMİ -->
+            <div class="card">
+                <h2 style="font-size: 1.1rem; margin-bottom: 15px; color: #1e293b;">📝 Son Sınav ve Deneme Sonuçları</h2>
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Sınav Adı</th>
+                            <th>Tarih</th>
+                            <th>TYT / AYT</th>
+                            <th>Net</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>ÖZDEBİR TYT-3</b></td>
+                            <td>20 Eylül 2026</td>
+                            <td>TYT</td>
+                            <td>84.50</td>
+                            <td><span style="color: #16a34a; font-weight: 600;">+3.2 Net Artış</span></td>
+                        </tr>
+                        <tr>
+                            <td><b>3D Türkiye Geneli AYT</b></td>
+                            <td>15 Eylül 2026</td>
+                            <td>AYT</td>
+                            <td>56.25</td>
+                            <td><span style="color: #2563eb; font-weight: 600;">Stabil</span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Aydın TYT Kurumsal</b></td>
+                            <td>08 Eylül 2026</td>
+                            <td>TYT</td>
+                            <td>81.30</td>
+                            <td><span style="color: #16a34a; font-weight: 600;">+1.5 Net Artış</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- REHBERLİK & VELİ NOTU -->
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2 style="font-size: 1.1rem; margin-bottom: 15px; color: #1e293b;">💡 Rehberlik / Sistem Notu</h2>
+                    <p style="color: #475569; font-size: 0.92rem; line-height: 1.6;">
+                        Öğrenciniz bu hafta özellikle <b>Matematik - Sayı Problemleri</b> ve <b>Paragraf</b> konularına yoğunlaştı. Günlük soru hedeflerine %90 oranında ulaşıldı.
+                    </p>
+                </div>
+                <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 15px;">
+                    <span style="font-size: 0.85rem; color: #64748b;">Haftalık Değerlendirme:</span>
+                    <div style="font-weight: 600; color: #16a34a; margin-top: 2px;">Düzenli ve İdeal Çalışma Temposu 👏</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DERS BAZLI BAŞARI & ÖĞRETMEN NOTLARI İKİLİ KART -->
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+            
+            <!-- DERS BAZLI İLERLEME -->
+            <div class="card">
+                <h2 style="font-size: 1.1rem; margin-bottom: 15px; color: #1e293b;">📈 Ders Bazlı Müfretad İlerlemesi</h2>
+                
+                <div class="subject-breakdown">
+                    <div class="subject-item">
+                        <div class="subject-header">
+                            <span>Matematik & Geometri</span>
+                            <span style="color: #4f46e5;">%78 Tamamlandı</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 78%; background: #4f46e5;"></div>
+                        </div>
+                    </div>
+
+                    <div class="subject-item">
+                        <div class="subject-header">
+                            <span>Fizik - Kimya - Biyoloji</span>
+                            <span style="color: #16a34a;">%85 Tamamlandı</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 85%; background: #16a34a;"></div>
+                        </div>
+                    </div>
+
+                    <div class="subject-item">
+                        <div class="subject-header">
+                            <span>Türkçe & Paragraf</span>
+                            <span style="color: #0284c7;">%92 Tamamlandı</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 92%; background: #0284c7;"></div>
+                        </div>
+                    </div>
+
+                    <div class="subject-item">
+                        <div class="subject-header">
+                            <span>Tarih & Coğrafya & Felsefe</span>
+                            <span style="color: #eab308;">%60 Tamamlandı</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width: 60%; background: #eab308;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REHBER ÖĞRETMEN MESAJ GEÇMİŞİ -->
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2 style="font-size: 1.1rem; margin-bottom: 10px; color: #1e293b;">👩‍🏫 Danışman Öğretmen Mesajları</h2>
+                    <div class="chat-box" id="chatContainer">
+                        <div class="chat-message incoming">
+                            <b>Rehberlik Servisi:</b> Merhaba, öğrencinizin bu haftaki matematik deneme artışı çok sevindirici. Geometri tekrarlarına devam etmesini öneriyoruz.
+                        </div>
+                        <div class="chat-message outgoing">
+                            <b>Siz:</b> Teşekkürler Hocam, evdeki çalışma saatlerini de düzenli takip ediyoruz.
+                        </div>
+                        <div class="chat-message incoming">
+                            <b>Rehberlik Servisi:</b> Harika! Bir sonraki deneme sonuçları açıklandığında tekrar değerlendireceğiz.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 15px;">
+                    <input type="text" id="quickMessageInput" placeholder="Mesajınızı yazın..." style="flex: 1; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    <button class="btn-action btn-action-primary" onclick="sendQuickMessage()">Gönder</button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- SMS / BİLDİRİM AYARLARI MODAL -->
+<div class="modal-overlay" id="smsModal">
+    <div class="modal-content">
+        <h3 style="margin-top: 0; color: #1e293b;">📱 SMS ve Bildirim Ayarları</h3>
+        <p style="color: #64748b; font-size: 0.88rem; margin-bottom: 15px;">Öğrencinizle ilgili hangi durumlarda SMS bilgilendirmesi almak istersiniz?</p>
+        
+        <div class="form-group">
+            <label><input type="checkbox" checked> Haftalık Özet Raporu (Her Pazar SMS)</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" checked> Deneme Sınavı Sonuçlandığında</label>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" checked> Çalışma Hedefi Aksaması Durumunda</label>
+        </div>
+        <div class="form-group">
+            <label>Veli Telefon Numarası</label>
+            <input type="text" value="+90 5XX XXX XX XX" id="parentPhoneInput">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button class="btn-action" onclick="closeSmsModal()">İptal</button>
+            <button class="btn-action btn-action-primary" onclick="saveSmsSettings()">Kaydet</button>
+        </div>
+    </div>
+</div>
+
+<!-- DANIŞMANA MESAJ GÖNDER MODAL -->
+<div class="modal-overlay" id="messageModal">
+    <div class="modal-content">
+        <h3 style="margin-top: 0; color: #1e293b;">💬 Danışman Öğretmene Mesaj Gönder</h3>
+        
+        <div class="form-group">
+            <label>Konu</label>
+            <select id="msgSubject">
+                <option>Genel Performans Değerlendirmesi</option>
+                <option>Deneme Sınavı Netleri Hakkında</option>
+                <option>Çalışma Programı Talebi</option>
+                <option>Diğer</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Mesajınız</label>
+            <textarea id="msgBody" rows="4" placeholder="Öğretmene iletmek istediğiniz notu buraya yazın..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button class="btn-action" onclick="closeMessageModal()">İptal</button>
+            <button class="btn-action btn-action-primary" onclick="sendMessageModalSubmit()">Gönder</button>
+        </div>
+    </div>
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    function updateParentView() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Ecrin Ayan";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "EA";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => {
+            el.textContent = fullName + " (Velisi)";
+        });
+
+        document.querySelectorAll("[data-avatar]").forEach(el => {
+            el.textContent = initials;
+        });
+
+        const studentNameEl = document.getElementById("parentStudentName");
+        if (studentNameEl) {
+            studentNameEl.textContent = "Öğrenci: " + fullName;
+        }
+    }
+
+    /* EKLENEN YENİ İNTERAKTİF FONKSİYONLAR */
+    function downloadReport() {
+        alert("Öğrencinizin haftalık PDF performans raporu hazırlanıyor ve indirme başlatılıyor...");
+    }
+
+    function openSmsSettings() {
+        document.getElementById("smsModal").style.display = "flex";
+    }
+
+    function closeSmsModal() {
+        document.getElementById("smsModal").style.display = "none";
+    }
+
+    function saveSmsSettings() {
+        alert("SMS ve Bildirim tercihleriniz başarıyla güncellendi.");
+        closeSmsModal();
+    }
+
+    function openMessageModal() {
+        document.getElementById("messageModal").style.display = "flex";
+    }
+
+    function closeMessageModal() {
+        document.getElementById("messageModal").style.display = "none";
+    }
+
+    function sendMessageModalSubmit() {
+        const text = document.getElementById("msgBody").value.trim();
+        if (text) {
+            appendMessage("Sız: " + text);
+            document.getElementById("msgBody").value = "";
+            closeMessageModal();
+            alert("Mesajınız rehberlik servisine iletildi.");
+        } else {
+            alert("Lütfen bir mesaj metni girin.");
+        }
+    }
+
+    function sendQuickMessage() {
+        const input = document.getElementById("quickMessageInput");
+        const text = input.value.trim();
+        if (text) {
+            appendMessage("Siz: " + text);
+            input.value = "";
+        }
+    }
+
+    function appendMessage(msg) {
+        const container = document.getElementById("chatContainer");
+        const div = document.createElement("div");
+        div.className = "chat-message outgoing";
+        div.innerHTML = "<b>" + msg.split(":")[0] + ":</b>" + msg.substring(msg.indexOf(":") + 1);
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateParentView();
+    });
+</script>
+
+</body>
+</html>

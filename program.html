@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çalışma Programım | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        /* MEVCUT TASARIMI DESTEKLEYEN EK BİLEŞEN STİLLERİ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .stat-card-title {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .stat-card-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            margin-top: 6px;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #2563eb;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .quick-templates {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .chip-btn {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #334155;
+            transition: all 0.2s;
+        }
+
+        .chip-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .priority-pill {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .priority-high { background: #fee2e2; color: #991b1b; }
+        .priority-med { background: #fef3c7; color: #92400e; }
+        .priority-low { background: #e0e7ff; color: #3730a3; }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-card {
+            background: #ffffff;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        @media print {
+            .sidebar, .topbar, .card-form, .toolbar, .btn-action-col {
+                display: none !important;
+            }
+            .content { margin: 0; padding: 0; }
+            .card { border: none; box-shadow: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html" class="active">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Haftalık Çalışma Programı</h1>
+                <p>Haftalık ders ve konu hedeflerini planla, zaman yönetimini kontrol altında tut.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">YKS Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET İSTATİSTİK KARTLARI -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-title">Toplam Planlanan Görev</div>
+                <div class="stat-card-value" id="statTotalCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Tamamlanan Görevler</div>
+                <div class="stat-card-value" style="color: #16a34a;" id="statCompletedCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Toplam Çalışma Süresi</div>
+                <div class="stat-card-value" style="color: #d97706;" id="statTotalHours">0 Saat</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-title">Haftalık İlerleme Oranı</div>
+                <div class="stat-card-value" style="color: #2563eb;" id="statProgressPercent">%0</div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="statProgressBar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOTİVASYON VE ÖZET BİLGİ KUTUSU -->
+        <div class="card" style="margin-bottom: 20px; background: #f8fafc; border-left: 4px solid #2563eb;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <strong style="color: #1e293b;">💡 Haftalık Rehber Notu:</strong>
+                    <span id="advisorText" style="color: #475569; font-size: 0.9rem; margin-left: 5px;">Programınızı oluşturmaya başlayın. Düzenli çalışma başarının anahtarıdır!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROGRAM EKLEME FORMU -->
+        <section class="card card-form" style="margin-bottom: 20px;">
+            <div class="section-title">
+                <h2>Program Görevi Ekle</h2>
+            </div>
+
+            <form id="taskForm" onsubmit="addTask(event)">
+                <div class="grid grid-3" style="gap: 15px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="field">
+                        <label for="taskDay">Gün</label>
+                        <select id="taskDay" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;" required>
+                            <option value="Pazartesi">Pazartesi</option>
+                            <option value="Salı">Salı</option>
+                            <option value="Çarşamba">Çarşamba</option>
+                            <option value="Perşembe">Perşembe</option>
+                            <option value="Cuma">Cuma</option>
+                            <option value="Cumartesi">Cumartesi</option>
+                            <option value="Pazar">Pazar</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="taskPriority">Öncelik Seviyesi</label>
+                        <select id="taskPriority" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                            <option value="Orta">Orta Öncelikli</option>
+                            <option value="Yüksek">Yüksek (Acil/Kritik)</option>
+                            <option value="Düşük">Düşük</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="taskDuration">Tahmini Süre (Saat)</label>
+                        <input type="number" id="taskDuration" min="0.5" step="0.5" value="1" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;" required>
+                    </div>
+                </div>
+
+                <div class="field" style="margin-top: 15px;">
+                    <label for="taskSubject">Ders / Konu / Hedef</label>
+                    <input type="text" id="taskSubject" placeholder="Örn: Matematik - Türev 20 Soru Çözümü" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;" required>
+                </div>
+
+                <!-- HIZLI EKLEME ŞABLONLARI -->
+                <div style="margin-top: 10px;">
+                    <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Hızlı Şablonlar:</span>
+                    <div class="quick-templates">
+                        <button type="button" class="chip-btn" onclick="applyTemplate('TYT Türkçe - 30 Paragraf Sorusu', 1, 'Yüksek')">+ 30 Paragraf (1 sa)</button>
+                        <button type="button" class="chip-btn" onclick="applyTemplate('TYT Matematik - 1 Deneme Çözümü', 2.5, 'Yüksek')">+ TYT Mat Deneme (2.5 sa)</button>
+                        <button type="button" class="chip-btn" onclick="applyTemplate('AYT Fizik - Konu Tekrarı & Özet', 1.5, 'Orta')">+ Fizik Tekrarı (1.5 sa)</button>
+                        <button type="button" class="chip-btn" onclick="applyTemplate('Geometri - 20 Soru Çözümü', 1, 'Orta')">+ 20 Geometri (1 sa)</button>
+                        <button type="button" class="chip-btn" onclick="applyTemplate('Genel Tekrar & Yanlış Soru Analizi', 1, 'Düşük')">+ Yanlış Analizi (1 sa)</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 15px;">+ Görev Ekle</button>
+            </form>
+        </section>
+
+        <!-- HAFTALIK PROGRAM TABLOSU -->
+        <section class="card">
+            <div class="section-title">
+                <h2>Haftalık Planım</h2>
+                <div>
+                    <button class="btn btn-soft" onclick="window.print()">🖨️ Yazdır</button>
+                    <button class="btn btn-soft" style="color: #dc2626;" onclick="clearTasks()">Tümünü Sil</button>
+                </div>
+            </div>
+
+            <!-- FİLTRELEME VE ARAMA ARAÇLARI -->
+            <div class="toolbar">
+                <div class="filter-group">
+                    <input type="text" id="searchInput" oninput="renderTasks()" placeholder="Görev ara..." style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
+                    
+                    <select id="filterDay" onchange="renderTasks()" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
+                        <option value="ALL">Tüm Günler</option>
+                        <option value="Pazartesi">Pazartesi</option>
+                        <option value="Salı">Salı</option>
+                        <option value="Çarşamba">Çarşamba</option>
+                        <option value="Perşembe">Perşembe</option>
+                        <option value="Cuma">Cuma</option>
+                        <option value="Cumartesi">Cumartesi</option>
+                        <option value="Pazar">Pazar</option>
+                    </select>
+
+                    <select id="filterStatus" onchange="renderTasks()" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;">
+                        <option value="ALL">Tüm Durumlar</option>
+                        <option value="PENDING">Bekleyenler</option>
+                        <option value="COMPLETED">Tamamlananlar</option>
+                    </select>
+                </div>
+
+                <div>
+                    <button class="btn btn-soft" onclick="exportTasksJson()" style="font-size: 0.8rem;">📥 Yedek İndir</button>
+                    <button class="btn btn-soft" onclick="importTasksJson()" style="font-size: 0.8rem;">📤 Yedek Yükle</button>
+                    <input type="file" id="importFile" style="display: none;" accept=".json" onchange="handleFileImport(event)">
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Gün</th>
+                            <th>Öncelik</th>
+                            <th>Süre</th>
+                            <th>Çalışılacak Konu / Hedef</th>
+                            <th>Durum</th>
+                            <th class="btn-action-col">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskList">
+                        <tr>
+                            <td colspan="6">Henüz bir görev eklenmedi.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<!-- GÖREV DÜZENLEME MODALI -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-card">
+        <div class="section-title">
+            <h3>Görevi Düzenle</h3>
+            <button class="btn btn-soft" onclick="closeEditModal()">Kapat</button>
+        </div>
+        <form id="editTaskForm" onsubmit="saveEditedTask(event)">
+            <input type="hidden" id="editIndex">
+            <div class="field" style="margin-bottom:12px;">
+                <label for="editDay">Gün</label>
+                <select id="editDay" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;" required>
+                    <option value="Pazartesi">Pazartesi</option>
+                    <option value="Salı">Salı</option>
+                    <option value="Çarşamba">Çarşamba</option>
+                    <option value="Perşembe">Perşembe</option>
+                    <option value="Cuma">Cuma</option>
+                    <option value="Cumartesi">Cumartesi</option>
+                    <option value="Pazar">Pazar</option>
+                </select>
+            </div>
+            <div class="field" style="margin-bottom:12px;">
+                <label for="editPriority">Öncelik Seviyesi</label>
+                <select id="editPriority" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;">
+                    <option value="Orta">Orta Öncelikli</option>
+                    <option value="Yüksek">Yüksek (Acil/Kritik)</option>
+                    <option value="Düşük">Düşük</option>
+                </select>
+            </div>
+            <div class="field" style="margin-bottom:12px;">
+                <label for="editDuration">Süre (Saat)</label>
+                <input type="number" id="editDuration" min="0.5" step="0.5" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;" required>
+            </div>
+            <div class="field" style="margin-bottom:15px;">
+                <label for="editSubject">Ders / Konu / Hedef</label>
+                <input type="text" id="editSubject" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:6px;" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Değişiklikleri Kaydet</button>
+        </form>
+    </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+    const TASK_STORAGE = "yks_tasks";
+    let tasks = JSON.parse(localStorage.getItem(TASK_STORAGE) || "[]");
+
+    // PROFIL SENKRONIZASYONU
+    function updateUserProfile() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Kullanıcı";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "YKS";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => {
+            el.textContent = fullName;
+        });
+
+        document.querySelectorAll("[data-avatar]").forEach(el => {
+            el.textContent = initials;
+        });
+    }
+
+    // İSTATİSTİKLERİ VE REHBER METNİNİ GÜNCELLE
+    function updateStats() {
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.completed).length;
+        const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+        
+        const totalHours = tasks.reduce((sum, t) => sum + (Number(t.duration) || 0), 0);
+        const completedHours = tasks.filter(t => t.completed).reduce((sum, t) => sum + (Number(t.duration) || 0), 0);
+
+        document.getElementById("statTotalCount").textContent = total;
+        document.getElementById("statCompletedCount").textContent = completed;
+        document.getElementById("statTotalHours").textContent = `${completedHours} / ${totalHours} Sa`;
+        document.getElementById("statProgressPercent").textContent = `%${percent}`;
+        document.getElementById("statProgressBar").style.width = `${percent}%`;
+
+        // Dinamik Rehber Notu
+        const advisor = document.getElementById("advisorText");
+        if (total === 0) {
+            advisor.textContent = "Henüz programınıza görev eklemediniz. Haftalık hedeflerinizi belirleyerek başlayın!";
+        } else if (percent === 100) {
+            advisor.textContent = "Harika iş! Bu haftaki tüm görevlerinizi başarıyla tamamladınız. Dinlenmeyi hak ettiniz!";
+        } else if (percent >= 50) {
+            advisor.textContent = "Süper gidiyorsun! Haftalık hedeflerinin yarısından fazlasını tamamladın.";
+        } else {
+            advisor.textContent = "Temponu koru, planlanan görevleri adım adım tamamlamaya odaklan!";
+        }
+    }
+
+    // ŞABLON UYGULA
+    function applyTemplate(text, duration = 1, priority = "Orta") {
+        document.getElementById("taskSubject").value = text;
+        document.getElementById("taskDuration").value = duration;
+        document.getElementById("taskPriority").value = priority;
+    }
+
+    // GÖREV LİSTESİNİ RENDER ET
+    function renderTasks() {
+        const tbody = document.getElementById("taskList");
+        const searchQuery = document.getElementById("searchInput").value.toLowerCase();
+        const selectedDay = document.getElementById("filterDay").value;
+        const selectedStatus = document.getElementById("filterStatus").value;
+
+        updateStats();
+
+        // Filtreleme mantığı
+        let filteredTasks = tasks.map((task, originalIndex) => ({ ...task, originalIndex }));
+
+        if (selectedDay !== "ALL") {
+            filteredTasks = filteredTasks.filter(t => t.day === selectedDay);
+        }
+
+        if (selectedStatus === "PENDING") {
+            filteredTasks = filteredTasks.filter(t => !t.completed);
+        } else if (selectedStatus === "COMPLETED") {
+            filteredTasks = filteredTasks.filter(t => t.completed);
+        }
+
+        if (searchQuery) {
+            filteredTasks = filteredTasks.filter(t => t.subject.toLowerCase().includes(searchQuery));
+        }
+
+        if (filteredTasks.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding: 20px;">Eşleşen ya da eklenen bir görev bulunamadı.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = filteredTasks.map(task => {
+            const priorityClass = task.priority === 'Yüksek' ? 'priority-high' : (task.priority === 'Düşük' ? 'priority-low' : 'priority-med');
+            
+            return `
+                <tr>
+                    <td><strong>${escapeHTML(task.day)}</strong></td>
+                    <td><span class="priority-pill ${priorityClass}">${escapeHTML(task.priority || 'Orta')}</span></td>
+                    <td><span class="small" style="font-weight:600; color:#475569;">${task.duration || 1} Sa</span></td>
+                    <td style="${task.completed ? 'text-decoration: line-through; color: #94a3b8;' : ''}">${escapeHTML(task.subject)}</td>
+                    <td>
+                        <span class="badge ${task.completed ? 'badge-good' : ''}">
+                            ${task.completed ? 'Tamamlandı' : 'Bekliyor'}
+                        </span>
+                    </td>
+                    <td class="btn-action-col">
+                        <button class="btn btn-soft" onclick="toggleTask(${task.originalIndex})">
+                            ${task.completed ? 'Geri Al' : 'Tamamla'}
+                        </button>
+                        <button class="btn btn-soft" onclick="openEditModal(${task.originalIndex})">Düzenle</button>
+                        <button class="btn btn-soft" style="color: #dc2626;" onclick="deleteTask(${task.originalIndex})">Sil</button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    // GÖREV EKLE
+    function addTask(e) {
+        e.preventDefault();
+
+        const day = document.getElementById("taskDay").value;
+        const priority = document.getElementById("taskPriority").value;
+        const duration = Number(document.getElementById("taskDuration").value) || 1;
+        const subject = document.getElementById("taskSubject").value.trim();
+
+        if (!subject) return;
+
+        tasks.push({
+            day,
+            priority,
+            duration,
+            subject,
+            completed: false,
+            createdAt: new Date().toISOString()
+        });
+
+        localStorage.setItem(TASK_STORAGE, JSON.stringify(tasks));
+        document.getElementById("taskSubject").value = "";
+        document.getElementById("taskDuration").value = "1";
+        renderTasks();
+    }
+
+    // GÖREV DÜZENLEME MODALI İŞLEMLERİ
+    function openEditModal(index) {
+        const task = tasks[index];
+        if (!task) return;
+
+        document.getElementById("editIndex").value = index;
+        document.getElementById("editDay").value = task.day;
+        document.getElementById("editPriority").value = task.priority || "Orta";
+        document.getElementById("editDuration").value = task.duration || 1;
+        document.getElementById("editSubject").value = task.subject;
+
+        document.getElementById("editModal").classList.add("active");
+    }
+
+    function closeEditModal() {
+        document.getElementById("editModal").classList.remove("active");
+    }
+
+    function saveEditedTask(e) {
+        e.preventDefault();
+        const index = document.getElementById("editIndex").value;
+        if (index === "" || !tasks[index]) return;
+
+        tasks[index].day = document.getElementById("editDay").value;
+        tasks[index].priority = document.getElementById("editPriority").value;
+        tasks[index].duration = Number(document.getElementById("editDuration").value) || 1;
+        tasks[index].subject = document.getElementById("editSubject").value.trim();
+
+        localStorage.setItem(TASK_STORAGE, JSON.stringify(tasks));
+        closeEditModal();
+        renderTasks();
+    }
+
+    // GÖREV DURUMU DEĞİŞTİR
+    function toggleTask(index) {
+        tasks[index].completed = !tasks[index].completed;
+        localStorage.setItem(TASK_STORAGE, JSON.stringify(tasks));
+        renderTasks();
+    }
+
+    // GÖREV SİL
+    function deleteTask(index) {
+        tasks.splice(index, 1);
+        localStorage.setItem(TASK_STORAGE, JSON.stringify(tasks));
+        renderTasks();
+    }
+
+    // TÜM GÖREVLERİ SİL
+    function clearTasks() {
+        if (!tasks.length) return;
+        if (confirm("Tüm haftalık planı silmek istediğinize emin misiniz?")) {
+            tasks = [];
+            localStorage.setItem(TASK_STORAGE, JSON.stringify(tasks));
+            renderTasks();
+        }
+    }
+
+    // DIŞA AKTAR (JSON)
+    function exportTasksJson() {
+        if (tasks.length === 0) {
+            alert("İndirilecek program bulunamadı.");
+            return;
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `yks_calisma_programi_${new Date().toISOString().slice(0,10)}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    // İÇE AKTAR (JSON)
+    function importTasksJson() {
+        document.getElementById('importFile').click();
+    }
+
+    function handleFileImport(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (Array.isArray(imported)) {
+                    tasks = imported;
+                    localStorage.setItem(TASK_STORAGE, JSON.stringify(tasks));
+                    renderTasks();
+                    alert("Çalışma programı başarıyla yüklendi!");
+                } else {
+                    alert("Geçersiz dosya biçimi.");
+                }
+            } catch (err) {
+                alert("Dosya okunamadı.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function escapeHTML(str) {
+        return String(str).replace(/[&<>'"]/g, 
+            tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag] || tag)
+        );
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUserProfile();
+        renderTasks();
+    });
+</script>
+
+</body>
+</html>

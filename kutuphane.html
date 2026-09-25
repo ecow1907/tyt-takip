@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaynak Kütüphanesi | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .filter-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            background-color: #f8fafc;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.2s;
+        }
+
+        .btn-ai:hover {
+            opacity: 0.9;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .resource-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .resource-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .tag-youtube {
+            background: #ffe4e6;
+            color: #e11d48;
+        }
+
+        .tag-meb {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .tag-pdf {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .tag-eba {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .resource-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .resource-desc {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .btn-yt {
+            background: #ff0000;
+            color: white;
+        }
+
+        .btn-meb-link {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-pdf-link {
+            background: #d97706;
+            color: white;
+        }
+
+        .btn-eba-link {
+            background: #16a34a;
+            color: white;
+        }
+
+        .quick-nav-section {
+            margin-top: 35px;
+            margin-bottom: 20px;
+        }
+
+        .quick-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .quick-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 600;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .quick-card:hover {
+            border-color: #4f46e5;
+            background-color: #f8fafc;
+        }
+
+        .quick-icon {
+            font-size: 1.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html" class="active">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>Kaynak Kütüphanesi</h1>
+                <p>Sana özel yapay zeka destekli YouTube ders videoları, MEB kaynakları ve ücretsiz PDF fasikülleri.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">Öğrenci</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- YAPAY ZEKA FİLTRE VE ARAMA PANELİ -->
+        <div class="filter-card">
+            <h3 style="margin-top: 0; color: #1e293b;">🤖 AI Kaynak Önerici & Filtreleme</h3>
+            <p style="color: #64748b; font-size: 0.9rem;">Eksik olduğun dersi, zorluk seviyesini ve kaynak tipini seç; yapay zeka en verimli kaynakları sıralasın.</p>
+
+            <div class="filter-grid">
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Ders Seçin</label>
+                    <select class="form-control" id="subjectSelect">
+                        <option value="matematik">Matematik</option>
+                        <option value="fizik">Fizik</option>
+                        <option value="kimya">Kimya</option>
+                        <option value="biyoloji">Biyoloji</option>
+                        <option value="turkce">Türkçe / Paragraf</option>
+                        <option value="tarih">Tarih</option>
+                        <option value="cografya">Coğrafya</option>
+                        <option value="felsefe">Felsefe & Din</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Sınav Türü</label>
+                    <select class="form-control" id="examTypeSelect">
+                        <option value="TYT">TYT</option>
+                        <option value="AYT">AYT</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Kaynak Tipi</label>
+                    <select class="form-control" id="typeSelect">
+                        <option value="all">Tümü (YouTube + MEB + PDF)</option>
+                        <option value="youtube">Sadece YouTube Videosu</option>
+                        <option value="meb">Sadece MEB / OGM Materyal</option>
+                        <option value="pdf">Sadece PDF Çalışma Fasikülü</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Seviye / Zorluk</label>
+                    <select class="form-control" id="levelSelect">
+                        <option value="orta">Orta Seviye (Standart)</option>
+                        <option value="temel">Temel / Sıfırdan Başlayanlar</option>
+                        <option value="ileri">İleri Seviye / Derece Hedefleyenler</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #475569;">Konu Ara (İsteğe Bağlı)</label>
+                    <input type="text" class="form-control" id="keywordInput" placeholder="Örn: Türev, Paragraf, Organik...">
+                </div>
+
+                <div style="display: flex; align-items: flex-end;">
+                    <button class="btn-ai" onclick="generateAiResources()">✨ AI Önerisi Getir</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HIZLI ERİŞİM PORTALLARI -->
+        <div class="quick-nav-section">
+            <h3 style="color: #1e293b; font-size: 1.1rem; margin-bottom: 12px;">🔗 Resmi ve Ücretsiz Hızlı Kaynak Portalları</h3>
+            <div class="quick-nav-grid">
+                <a href="https://ogmmateryal.eba.gov.tr/" target="_blank" class="quick-card">
+                    <span class="quick-icon">🏛️</span>
+                    <div>
+                        <div>OGM Materyal</div>
+                        <span style="font-size: 0.75rem; color: #64748b; font-weight: normal;">MEB Soru Bankası & Kitaplar</span>
+                    </div>
+                </a>
+                <a href="https://eba.gov.tr" target="_blank" class="quick-card">
+                    <span class="quick-icon">💻</span>
+                    <div>
+                        <div>EBA Ders</div>
+                        <span style="font-size: 0.75rem; color: #64748b; font-weight: normal;">Eğitim Bilişim Ağı Videoları</span>
+                    </div>
+                </a>
+                <a href="https://dortdortluk.eba.gov.tr" target="_blank" class="quick-card">
+                    <span class="quick-icon">📘</span>
+                    <div>
+                        <div>4'ü Bir Yerde / Dört Dörtlük</div>
+                        <span style="font-size: 0.75rem; color: #64748b; font-weight: normal;">Pekiştirme Testleri</span>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com" target="_blank" class="quick-card">
+                    <span class="quick-icon">▶️</span>
+                    <div>
+                        <div>YKS YouTube Kanalları</div>
+                        <span style="font-size: 0.75rem; color: #64748b; font-weight: normal;">Ücretsiz Konu Anlatımları</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <h3 style="color: #1e293b; font-size: 1.2rem; margin-top: 25px; margin-bottom: 15px;">📌 Sizin İçin Önerilen Öne Çıkan Kaynaklar</h3>
+
+        <!-- KAYNAK KARTLARI -->
+        <div class="resources-grid" id="resourcesContainer">
+
+            <!-- YOUTUBE - TYT MATEMATİK FONKSİYONLAR -->
+            <div class="resource-card">
+                <div>
+                    <span class="resource-tag tag-youtube">YOUTUBE VİDEO</span>
+                    <div class="resource-title">TYT Matematik - Fonksiyonlar Full Tekrar</div>
+                    <div class="resource-desc">Yapay Zeka Notu: Bu konu denemelerdeki yanlış analizinize göre %85 öncelikle çalışılması gereken konudur.</div>
+                </div>
+                <a href="https://www.youtube.com/results?search_query=TYT+Matematik+Fonksiyonlar+Full+Tekrar" target="_blank" rel="noopener noreferrer" class="btn-link btn-yt">▶️ Videoyu İzle</a>
+            </div>
+
+            <!-- MEB - FİZİK ÇEMBERSEL HAREKET -->
+            <div class="resource-card">
+                <div>
+                    <span class="resource-tag tag-meb">MEB KAZANIM KAVRAMA</span>
+                    <div class="resource-title">MEB 12. Sınıf Fizik - Çembersel Hareket Testleri</div>
+                    <div class="resource-desc">MEB'in resmi kazanım testleri ve OGM Materyal çalışma fasikülü PDF içeriği.</div>
+                </div>
+                <a href="https://ogmmateryal.eba.gov.tr/soru-bankasi/fizik/12" target="_blank" class="btn-link btn-meb-link">📄 MEB Kaynağına Git</a>
+            </div>
+
+            <!-- YOUTUBE - AYT KİMYA MODERN ATOM TEORİSİ -->
+            <div class="resource-card">
+                <div>
+                    <span class="resource-tag tag-youtube">YOUTUBE VİDEO</span>
+                    <div class="resource-title">AYT Kimya - Modern Atom Teorisi Soru Çözümü</div>
+                    <div class="resource-desc">Derece öğrencilerinin en çok tercih ettiği konu anlatım ve soru çözüm kampı.</div>
+                </div>
+                <a href="https://www.youtube.com/results?search_query=AYT+Kimya+Modern+Atom+Teorisi+Soru+%C3%87%C3%B6z%C3%BCm%C3%BC" target="_blank" class="btn-link btn-yt">▶️ Videoyu İzle</a>
+            </div>
+
+            <!-- PDF - TYT PARAGRAF TAKTİKLERİ -->
+            <div class="resource-card">
+                <div>
+                    <span class="resource-tag tag-pdf">PDF ÇALIŞMA NOTU</span>
+                    <div class="resource-title">TYT Türkçe - Paragraf Soru Çözüm Taktikleri Rehberi</div>
+                    <div class="resource-desc">ÖSYM tarzı çeldiricileri eleme teknikleri, zaman yönetimi ve günlük soru çözme stratejileri içeren çalışma föyü.</div>
+                </div>
+                <a href="https://ogmmateryal.eba.gov.tr/yks-hazirlik/tyt" target="_blank" class="btn-link btn-pdf-link">📥 PDF Notunu İncele</a>
+            </div>
+
+            <!-- MEB EBA - BİYOLOJİ HÜCRE BÖLÜNMELERİ -->
+            <div class="resource-card">
+                <div>
+                    <span class="resource-tag tag-eba">EBA İNTERAKTİF</span>
+                    <div class="resource-title">TYT Biyoloji - Hücre Bölünmeleri & Kalıtım İnteraktif Modülü</div>
+                    <div class="resource-desc">EBA platformu üzerinde animasyon destekli, görsel anlatımlı ve anlık çözümlü pekiştirme soruları.</div>
+                </div>
+                <a href="https://eba.gov.tr" target="_blank" class="btn-link btn-eba-link">🌐 EBA İnteraktif Dersi Aç</a>
+            </div>
+
+            <!-- YOUTUBE - AYT MATEMATİK İNTEGRAL -->
+            <div class="resource-card">
+                <div>
+                    <span class="resource-tag tag-youtube">YOUTUBE VİDEO</span>
+                    <div class="resource-title">AYT Matematik - İntegre Soru Tipleri & Derece Serisi</div>
+                    <div class="resource-desc">ÖSYM'nin son yıllarda sorduğu zorlayıcı sınav sorularına özel yaklaşım teknikleri ve pratik çözümler.</div>
+                </div>
+                <a href="https://www.youtube.com/results?search_query=AYT+Matematik+İntegral+Soru+Çözümü" target="_blank" class="btn-link btn-yt">▶️ Videoyu İzle</a>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    function generateAiResources() {
+        const subject = document.getElementById("subjectSelect").value;
+        const exam = document.getElementById("examTypeSelect").value;
+        const type = document.getElementById("typeSelect").value;
+        const level = document.getElementById("levelSelect").value;
+        const keyword = document.getElementById("keywordInput").value.trim();
+
+        const container = document.getElementById("resourcesContainer");
+
+        let searchTerm = `${exam} ${subject.toUpperCase()}`;
+        if (keyword) {
+            searchTerm += ` ${keyword}`;
+        }
+        
+        let levelText = "Orta Seviye";
+        if (level === "temel") levelText = "Sıfırdan Başlayanlar İçin Temel Seviye";
+        if (level === "ileri") levelText = "Derece Hedefleyenler İçin İleri Seviye";
+
+        const searchQuery = encodeURIComponent(`${searchTerm} Konu Anlatımı Soru Çözümü`);
+
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 30px; color: #4f46e5; font-weight: 600;">🤖 Yapay zeka seviyenize (${levelText}) uygun en iyi MEB, PDF ve YouTube kaynaklarını derliyor...</div>`;
+
+        setTimeout(() => {
+            let cardsHtml = "";
+
+            // YouTube Kartı
+            if (type === "all" || type === "youtube") {
+                cardsHtml += `
+                <div class="resource-card">
+                    <div>
+                        <span class="resource-tag tag-youtube">YOUTUBE VİDEO</span>
+                        <div class="resource-title">${searchTerm} - ${levelText} Kampı</div>
+                        <div class="resource-desc">Yapay zeka eksiklerinizi ve seviyenizi analiz etti. Bu video serisi en yüksek verimi alabileceğiniz anlatıma sahiptir.</div>
+                    </div>
+                    <a href="https://www.youtube.com/results?search_query=${searchQuery}" target="_blank" class="btn-link btn-yt">▶️ Videoyu İzle</a>
+                </div>`;
+            }
+
+            // MEB Kartı
+            if (type === "all" || type === "meb") {
+                cardsHtml += `
+                <div class="resource-card">
+                    <div>
+                        <span class="resource-tag tag-meb">MEB OGMMATERYAL</span>
+                        <div class="resource-title">MEB ${searchTerm} Dört Dörtlük Tekrar Testi</div>
+                        <div class="resource-desc">MEB tarafından yayınlanan, ${levelText} odaklı çıkması muhtemel soru tiplerini içeren çalışma fasikülü.</div>
+                    </div>
+                    <a href="https://ogmmateryal.eba.gov.tr/" target="_blank" class="btn-link btn-meb-link">📄 MEB Kaynağına Git</a>
+                </div>`;
+            }
+
+            // PDF Kartı
+            if (type === "all" || type === "pdf") {
+                cardsHtml += `
+                <div class="resource-card">
+                    <div>
+                        <span class="resource-tag tag-pdf">PDF ÇALIŞMA REHBERİ</span>
+                        <div class="resource-title">${searchTerm} Formül & Özet PDF Föyü</div>
+                        <div class="resource-desc">Sınav öncesi hızlı tekrarlar için hazılanmış, püf noktalar ve önemli hatırlatmaları içeren özet döküman.</div>
+                    </div>
+                    <a href="https://ogmmateryal.eba.gov.tr/yks-hazirlik" target="_blank" class="btn-link btn-pdf-link">📥 PDF Dosyasını İndir</a>
+                </div>`;
+            }
+
+            // Ekstra EBA Kartı
+            if (type === "all" || type === "meb") {
+                cardsHtml += `
+                <div class="resource-card">
+                    <div>
+                        <span class="resource-tag tag-eba">EBA İNTERAKTİF</span>
+                        <div class="resource-title">EBA Akademia - ${searchTerm} Online Soru Bankası</div>
+                        <div class="resource-desc">Milli Eğitim Bakanlığı EBA sistemi üzerindeki etkileşimli kavrama testleri ve anlatım videoları.</div>
+                    </div>
+                    <a href="https://eba.gov.tr" target="_blank" class="btn-link btn-eba-link">🌐 EBA İçeriğini Aç</a>
+                </div>`;
+            }
+
+            container.innerHTML = cardsHtml;
+        }, 800);
+    }
+</script>
+
+</body>
+</html> 

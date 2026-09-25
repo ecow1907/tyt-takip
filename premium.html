@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Üyelik | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pricing-header h2 {
+            font-size: 2rem;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .pricing-header p {
+            color: #64748b;
+            font-size: 1.05rem;
+        }
+
+        /* YILLIK / AYLIK TOGGLE SWITCH */
+        .billing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 35px;
+        }
+
+        .billing-toggle span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .billing-toggle .save-badge {
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-toggle {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 26px;
+        }
+
+        .slider-toggle:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-toggle {
+            background-color: #4f46e5;
+        }
+
+        input:checked + .slider-toggle:before {
+            transform: translateX(22px);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .price-card {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px 25px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .price-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .price-card.popular {
+            border-color: #4f46e5;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .plan-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .plan-desc {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 20px;
+            min-height: 40px;
+        }
+
+        .plan-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+        .plan-price span {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.92rem;
+            color: #334155;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-buy-primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-buy-primary:hover {
+            background: #4338ca;
+        }
+
+        .btn-buy-outline {
+            background: #f8fafc;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-buy-outline:hover {
+            background: #f1f5f9;
+        }
+
+        /* SSS BÖLÜMÜ */
+        .faq-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .faq-section h3 {
+            font-size: 1.4rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 15px 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-title {
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-desc {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* MODAL (Ödeme Penceresi) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .payment-method-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .payment-method-btn.active {
+            border-color: #4f46e5;
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html" class="active">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>Premium Üyelik Paketleri</h1>
+                <p>Hedeflerinize daha hızlı ulaşmak için size en uygun paketi seçin.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">Ücretsiz Üye</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pricing-header">
+            <h2>Sınav Maratonunda Öne Geçin 🚀</h2>
+            <p>Yapay zeka analizleri, birebir canlı dersler ve veli bilgilendirmeleri ile hedefinize odaklanın.</p>
+        </div>
+
+        <!-- ÖDENDİ / ÖDEME PERİYODU SEÇİMİ -->
+        <div class="billing-toggle">
+            <span>Aylık Ödeme</span>
+            <label class="switch-toggle">
+                <input type="checkbox" id="billingCycleToggle" onchange="toggleBillingCycle()">
+                <span class="slider-toggle"></span>
+            </label>
+            <span>Yıllık Ödeme</span>
+            <span class="save-badge">%20 İndirim</span>
+        </div>
+
+        <!-- FİYAT KARTLARI -->
+        <div class="pricing-grid">
+
+            <!-- ÜCRETSİZ PAKET -->
+            <div class="price-card">
+                <div>
+                    <div class="plan-name">Ücretsiz</div>
+                    <div class="plan-desc">Temel YKS takibi yapmak isteyen öğrenciler için.</div>
+                    <div class="plan-price" id="price-free">₺0 <span>/ ay</span></div>
+
+                    <ul class="features-list">
+                        <li>✅ Günlük Çalışma Programı</li>
+                        <li>✅ Temel Deneme Takibi</li>
+                        <li>✅ Sınırlı Yanlış Analizi</li>
+                        <li>❌ Yapay Zeka Koçluğu</li>
+                        <li>❌ Canlı Ders Erişimi</li>
+                        <li>❌ Veli Takip Paneli</li>
+                    </ul>
+                </div>
+                <button class="btn-buy btn-buy-outline" style="cursor: not-allowed;" disabled>Mevcut Paket</button>
+            </div>
+
+            <!-- PRO PAKET (POPÜLER) -->
+            <div class="price-card popular">
+                <div class="popular-badge">EN ÇOK TERCİH EDİLEN</div>
+                <div>
+                    <div class="plan-name" style="color: #4f46e5;">YKS Pro</div>
+                    <div class="plan-desc">Bireysel çalışma performansını üst seviyeye çıkarmak isteyenler için.</div>
+                    <div class="plan-price" id="price-pro">₺149 <span>/ ay</span></div>
+
+                    <ul class="features-list">
+                        <li>✅ Sınırsız Deneme ve Yanlış Analizi</li>
+                        <li>✅ Soru Çözüm Videoları Erişimi</li>
+                        <li>✅ Yapay Zeka Sınav Tahminleri</li>
+                        <li>✅ Detaylı Grafik & Gelişim Raporu</li>
+                        <li>✅ Veli Takip Paneli Erişimi</li>
+                        <li>❌ Birebir Canlı Dersler</li>
+                    </ul>
+                </div>
+                <button class="btn-buy btn-buy-primary" onclick="handleCheckout('YKS Pro')">Pro'ya Yükselt</button>
+            </div>
+
+            <!-- DERECE PAKETİ -->
+            <div class="price-card">
+                <div>
+                    <div class="plan-name">Derece Paketi</div>
+                    <div class="plan-desc">Sınavda ilk 10.000 hedefleyen kapsamlı hazırlık paketi.</div>
+                    <div class="plan-price" id="price-derece">₺299 <span>/ ay</span></div>
+
+                    <ul class="features-list">
+                        <li>✅ Pro Paketindeki Tüm Özellikler</li>
+                        <li>✅ Haftalık Canlı Soru Çözüm Dersleri</li>
+                        <li>✅ Birebir Rehberlik & Koçluk Desteği</li>
+                        <li>✅ Türkiye Geneli Online Denemeler</li>
+                        <li>✅ VIP Veli Bilgilendirme Servisi</li>
+                        <li>✅ Sınırsız AI Soru Çözücü</li>
+                    </ul>
+                </div>
+                <button class="btn-buy btn-buy-outline" onclick="handleCheckout('Derece Paketi')">Dereceye Başla</button>
+            </div>
+
+            <!-- KURUMSAL / OKUL PAKETİ -->
+            <div class="price-card">
+                <div>
+                    <div class="plan-name">Okul & Sınıf</div>
+                    <div class="plan-desc">Toplu öğrenci ve rehberlik servisi kullanımı için.</div>
+                    <div class="plan-price" id="price-kurumsal">₺499 <span>/ ay</span></div>
+
+                    <ul class="features-list">
+                        <li>✅ 10+ Öğrenci Tanımlama</li>
+                        <li>✅ Toplu Başarı Analizi ve Raporlama</li>
+                        <li>✅ Özel Öğretmen Paneli</li>
+                        <li>✅ Sınıf İçi Soru Havuzu Oluşturma</li>
+                        <li>✅ 7/24 Öncelikli Teknik Destek</li>
+                        <li>✅ Kurumsal Rapor Dosyaları</li>
+                    </ul>
+                </div>
+                <button class="btn-buy btn-buy-outline" onclick="handleCheckout('Okul & Sınıf Paketi')">Kurumsal Al</button>
+            </div>
+
+        </div>
+
+        <!-- SIKÇA SORULAN SORULAR -->
+        <div class="faq-section">
+            <h3>Sıkça Sorulan Sorular ❓</h3>
+
+            <div class="faq-item">
+                <div class="faq-title">Üyeliğimi istediğim zaman iptal edebilir miyim?</div>
+                <div class="faq-desc">Evet, aboneliğinizi dilediğiniz an hiçbir ek ücret ödemeden profil ayarlarınızdan iptal edebilirsiniz.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-title">Ödeme seçenekleri nelerdir?</div>
+                <div class="faq-desc">Tüm banka ve kredi kartları (Visa, Mastercard, Troy) veya Havale/EFT ile güvenle ödeme yapabilirsiniz.</div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-title">Veli takip paneli nasıl çalışır?</div>
+                <div class="faq-desc">Premium paketlerde velinizin telefon numarasına veya e-postasına özel bir erişim bağlantısı gönderilir. Veliniz sadece sizin izin verdiğiniz raporları inceleyebilir.</div>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<!-- ÖDEME MODAL PENCERESİ -->
+<div class="modal-overlay" id="checkoutModal">
+    <div class="modal-content">
+        <h3 style="margin-top: 0; color: #1e293b;" id="modalTitle">Paket Satın Al</h3>
+        <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 15px;" id="modalPrice">Toplam Tutar: ₺0</p>
+
+        <!-- ÖDEME YÖNTEMİ SEÇİMİ -->
+        <div class="payment-methods">
+            <div class="payment-method-btn active" id="btnCard" onclick="selectPaymentMethod('card')">💳 Kredi / Banka Kartı</div>
+            <div class="payment-method-btn" id="btnEft" onclick="selectPaymentMethod('eft')">🏦 Havale / EFT</div>
+        </div>
+
+        <form id="paymentForm" onsubmit="processPayment(event)">
+            <!-- KART İLE ÖDEME ALANLARI -->
+            <div id="cardFields">
+                <div class="form-group">
+                    <label>Kart Üzerindeki İsim</label>
+                    <input type="text" placeholder="Ad Soyad" id="cardName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Kart Numarası</label>
+                    <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" id="cardNumber" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Son Kullanma</label>
+                        <input type="text" placeholder="AA/YY" maxlength="5" id="cardExp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CVC / CVV</label>
+                        <input type="text" placeholder="123" maxlength="3" id="cardCvc" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HAVALE/EFT ALANLARI -->
+            <div id="eftFields" style="display: none; font-size: 0.88rem; color: #475569; background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                <p style="margin: 0 0 5px 0;"><strong>IBAN:</strong> TR92 0006 2000 0000 1234 5678 90</p>
+                <p style="margin: 0 0 5px 0;"><strong>Banka:</strong> Ziraat Bankası</p>
+                <p style="margin: 0;"><strong>Açıklama:</strong> YKS-<span id="userCodeRef">1001</span> Satın Alımı</p>
+            </div>
+
+            <!-- KUPON KODU -->
+            <div class="form-group">
+                <label>İndirim / Kupon Kodu</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" placeholder="Örn: YKS2027" id="couponCode">
+                    <button type="button" class="btn-buy btn-buy-outline" style="width: auto; padding: 0 15px;" onclick="applyCoupon()">Uygula</button>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn-buy btn-buy-outline" onclick="closeCheckout()">İptal</button>
+                <button type="submit" class="btn-buy btn-buy-primary" id="submitPaymentBtn">Ödemeyi Tamamla</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    let selectedPlan = "";
+    let isYearly = false;
+    let basePrices = {
+        'YKS Pro': 149,
+        'Derece Paketi': 299,
+        'Okul & Sınıf Paketi': 499
+    };
+    let currentPaymentMethod = 'card';
+
+    function toggleBillingCycle() {
+        isYearly = document.getElementById("billingCycleToggle").checked;
+        
+        const proPrice = isYearly ? Math.round(basePrices['YKS Pro'] * 0.8) : basePrices['YKS Pro'];
+        const derecePrice = isYearly ? Math.round(basePrices['Derece Paketi'] * 0.8) : basePrices['Derece Paketi'];
+        const kurumsalPrice = isYearly ? Math.round(basePrices['Okul & Sınıf Paketi'] * 0.8) : basePrices['Okul & Sınıf Paketi'];
+
+        const suffix = isYearly ? " / ay (Yıllık)" : " / ay";
+
+        document.getElementById("price-pro").innerHTML = "₺" + proPrice + " <span>" + suffix + "</span>";
+        document.getElementById("price-derece").innerHTML = "₺" + derecePrice + " <span>" + suffix + "</span>";
+        document.getElementById("price-kurumsal").innerHTML = "₺" + kurumsalPrice + " <span>" + suffix + "</span>";
+    }
+
+    function handleCheckout(planName) {
+        selectedPlan = planName;
+        let price = basePrices[planName];
+        if (isYearly) price = Math.round(price * 0.8);
+
+        const cycleText = isYearly ? " (Yıllık Faturalandırma)" : " (Aylık)";
+        
+        document.getElementById("modalTitle").textContent = planName + " Satın Al";
+        document.getElementById("modalPrice").textContent = "Toplam Tutar: ₺" + price + cycleText;
+        document.getElementById("userCodeRef").textContent = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById("checkoutModal").style.display = "flex";
+    }
+
+    function selectPaymentMethod(method) {
+        currentPaymentMethod = method;
+        const btnCard = document.getElementById("btnCard");
+        const btnEft = document.getElementById("btnEft");
+        const cardFields = document.getElementById("cardFields");
+        const eftFields = document.getElementById("eftFields");
+
+        if (method === 'card') {
+            btnCard.classList.add("active");
+            btnEft.classList.remove("active");
+            cardFields.style.display = "block";
+            eftFields.style.display = "none";
+            document.getElementById("cardName").required = true;
+            document.getElementById("cardNumber").required = true;
+            document.getElementById("cardExp").required = true;
+            document.getElementById("cardCvc").required = true;
+        } else {
+            btnEft.classList.add("active");
+            btnCard.classList.remove("active");
+            cardFields.style.display = "none";
+            eftFields.style.display = "block";
+            document.getElementById("cardName").required = false;
+            document.getElementById("cardNumber").required = false;
+            document.getElementById("cardExp").required = false;
+            document.getElementById("cardCvc").required = false;
+        }
+    }
+
+    function applyCoupon() {
+        const code = document.getElementById("couponCode").value.trim().toUpperCase();
+        if (code === "YKS2027" || code === "DERECE") {
+            alert("Tebrikler! Kupon kodu uygulandı, %10 ek indirim kazandınız.");
+        } else if (code !== "") {
+            alert("Geçersiz veya süresi dolmuş kupon kodu.");
+        }
+    }
+
+    function closeCheckout() {
+        document.getElementById("checkoutModal").style.display = "none";
+    }
+
+    function processPayment(e) {
+        e.preventDefault();
+        if (currentPaymentMethod === 'card') {
+            alert("Tebrikler! " + selectedPlan + " üyeliğiniz başarıyla tanımlandı. 🚀");
+        } else {
+            alert("EFT talebiniz alındı! Ödemeniz onaylandıktan sonra " + selectedPlan + " hesabınıza aktif edilecektir.");
+        }
+        closeCheckout();
+    }
+</script>
+
+</body>
+</html>

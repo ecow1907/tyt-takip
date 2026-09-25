@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yanlış Analizi | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+     <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html" class="active">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>Yanlış Soru Analizi</h1>
+                <p>
+                    Hatalarını kaydet, doğru çözümünü incele ve eksik konularını tekrar et.
+                </p>
+            </div>
+
+            <!-- KULLANICI BİLGİSİ (GENEL PANEL İLE SENKRONİZE) -->
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">YKS Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET STATS -->
+        <div class="grid grid-4">
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Toplam yanlış</div>
+                    <div class="value" id="totalWrong">0</div>
+                    <span class="small">Kaydedilen sorular</span>
+                </div>
+                <div class="icon">❌</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Tekrar bekleyen</div>
+                    <div class="value" id="pendingWrong">0</div>
+                    <span class="small">Çalışılması gereken</span>
+                </div>
+                <div class="icon">📚</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">Tekrar edilen</div>
+                    <div class="value" id="reviewedWrong">0</div>
+                    <span class="small">Çalışılan sorular</span>
+                </div>
+                <div class="icon">✅</div>
+            </div>
+
+            <div class="card stat">
+                <div>
+                    <div class="label">En çok hata</div>
+                    <div class="value" id="mostWrongSubject">-</div>
+                    <span class="small">Ders bazında</span>
+                </div>
+                <div class="icon">📊</div>
+            </div>
+
+        </div>
+
+        <!-- YANLIŞ SORU EKLE -->
+        <section class="card" style="margin-top:20px">
+
+            <div class="section-title">
+                <h2>Yanlış soru ekle</h2>
+                <span class="badge badge-warn">Hata kaydı</span>
+            </div>
+
+            <form id="wrongForm">
+
+                <div class="grid grid-2">
+
+                    <div class="field">
+                        <label for="wrongExam">Sınav türü</label>
+                        <select id="wrongExam" required>
+                            <option value="TYT">TYT</option>
+                            <option value="AYT">AYT</option>
+                            <option value="LGS">LGS</option>
+                            <option value="KPSS">KPSS</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongSubject">Ders</label>
+                        <select id="wrongSubject" required>
+                            <!-- JS ile dinamik doldurulacak -->
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongTopic">Konu</label>
+                        <input type="text" id="wrongTopic" placeholder="Örn: Problemler" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongReason">Yanlış nedeni</label>
+                        <select id="wrongReason" required>
+                            <option value="Bilgi Eksikliği">Bilgi Eksikliği</option>
+                            <option value="Dikkat Hatası">Dikkat Hatası</option>
+                            <option value="İşlem Hatası">İşlem Hatası</option>
+                            <option value="Zaman Yönetimi">Zaman Yönetimi</option>
+                            <option value="Soruyu Anlamama">Soruyu Anlamama</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongDifficulty">Zorluk Seviyesi</label>
+                        <select id="wrongDifficulty" required>
+                            <option value="Kolay">Kolay</option>
+                            <option value="Orta" selected>Orta</option>
+                            <option value="Zor">Zor</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongDate">Tarih</label>
+                        <input type="date" id="wrongDate" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongQuestion">Soru numarası</label>
+                        <input type="number" id="wrongQuestion" min="1" placeholder="Örn: 24" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="wrongImage">Soru Görseli (İsteğe Bağlı)</label>
+                        <input type="file" id="wrongImage" accept="image/*">
+                    </div>
+
+                </div>
+
+                <div class="field" style="margin-top:15px">
+                    <label for="wrongQuestionText">Soru / açıklama</label>
+                    <textarea id="wrongQuestionText" rows="3" placeholder="Sorunun içeriğini veya yaptığın hatayı yaz..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="wrongCorrectAnswer">Doğru çözüm / cevap</label>
+                    <textarea id="wrongCorrectAnswer" rows="4" placeholder="Doğru çözümü veya cevap açıklamasını yaz..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    + Yanlış Soruyu Kaydet
+                </button>
+
+            </form>
+
+        </section>
+
+        <!-- FİLTRELER & ARAMA -->
+        <section class="card" style="margin-top:20px">
+
+            <div class="section-title">
+                <h2>Yanlış soru arşivi</h2>
+            </div>
+
+            <div class="grid grid-2">
+
+                <div class="field">
+                    <label for="searchQuery">Arama Yap</label>
+                    <input type="text" id="searchQuery" placeholder="Konu, açıklama veya çözüm ara...">
+                </div>
+
+                <div class="field">
+                    <label for="filterSubject">Ders filtresi</label>
+                    <select id="filterSubject">
+                        <option value="all">Tüm Dersler</option>
+                        <option value="Türkçe">Türkçe</option>
+                        <option value="Matematik">Matematik</option>
+                        <option value="Fen Bilimleri">Fen Bilimleri</option>
+                        <option value="Sosyal Bilimler">Sosyal Bilimler</option>
+                        <option value="AYT Matematik">AYT Matematik</option>
+                        <option value="AYT Fizik">AYT Fizik</option>
+                        <option value="AYT Kimya">AYT Kimya</option>
+                        <option value="AYT Biyoloji">AYT Biyoloji</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="filterStatus">Tekrar durumu</label>
+                    <select id="filterStatus">
+                        <option value="all">Tümü</option>
+                        <option value="pending">Tekrar Bekleyenler</option>
+                        <option value="reviewed">Tekrar Edilenler</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="filterDifficulty">Zorluk filtresi</label>
+                    <select id="filterDifficulty">
+                        <option value="all">Tümü</option>
+                        <option value="Kolay">Kolay</option>
+                        <option value="Orta">Orta</option>
+                        <option value="Zor">Zor</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SORULAR -->
+        <section class="card" style="margin-top:20px">
+
+            <div class="section-title">
+                <h2>Kayıtlı yanlışlar</h2>
+                <div>
+                    <button class="btn btn-soft" id="exportWrong">JSON İndir</button>
+                    <button class="btn btn-soft" id="clearWrong">Tümünü Sil</button>
+                </div>
+            </div>
+
+            <div id="wrongList">
+                <div class="empty-state">Henüz yanlış soru kaydedilmedi.</div>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    const WRONG_STORAGE = "yks_wrong_questions";
+
+    // PROFIL SENKRONIZASYONU (Genel Panel Fonksiyonu)
+    function updateUserProfile() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Kullanıcı";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "YKS";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => {
+            el.textContent = fullName;
+        });
+
+        document.querySelectorAll("[data-avatar]").forEach(el => {
+            el.textContent = initials;
+        });
+    }
+
+    // Ders Seçenekleri
+    const subjectsMap = {
+        TYT: ["Türkçe", "Matematik", "Fen Bilimleri", "Sosyal Bilimler"],
+        AYT: ["AYT Matematik", "AYT Fizik", "AYT Kimya", "AYT Biyoloji", "AYT Edebiyat", "AYT Tarih", "AYT Coğrafya"],
+        LGS: ["Türkçe", "Matematik", "Fen Bilimleri", "Inkilap Tarihi", "Din Kültürü", "İngilizce"],
+        KPSS: ["Genel Yetenek", "Genel Kültür", "Eğitim Bilimleri", "ÖABT"]
+    };
+
+    let wrongQuestions = [];
+    try {
+        wrongQuestions = JSON.parse(localStorage.getItem(WRONG_STORAGE) || "[]");
+    } catch (e) {
+        wrongQuestions = [];
+    }
+
+    const wrongForm = document.getElementById("wrongForm");
+    const wrongList = document.getElementById("wrongList");
+    const wrongExamSelect = document.getElementById("wrongExam");
+    const wrongSubjectSelect = document.getElementById("wrongSubject");
+
+    // Bugünün tarihini ayarla
+    document.getElementById("wrongDate").valueAsDate = new Date();
+
+    function updateSubjectOptions() {
+        const selectedExam = wrongExamSelect.value;
+        const subjects = subjectsMap[selectedExam] || [];
+        wrongSubjectSelect.innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join("");
+    }
+
+    wrongExamSelect.addEventListener("change", updateSubjectOptions);
+    updateSubjectOptions();
+
+    function escapeHTML(value) {
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function saveWrong() {
+        localStorage.setItem(
+            WRONG_STORAGE,
+            JSON.stringify(wrongQuestions)
+        );
+    }
+
+    function updateSummary() {
+        const total = wrongQuestions.length;
+        const reviewed = wrongQuestions.filter(item => item.reviewed).length;
+        const pending = total - reviewed;
+
+        const counts = {};
+        wrongQuestions.forEach(item => {
+            counts[item.subject] = (counts[item.subject] || 0) + 1;
+        });
+
+        let mostSubject = "-";
+        if (total > 0) {
+            mostSubject = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+        }
+
+        document.getElementById("totalWrong").textContent = total;
+        document.getElementById("reviewedWrong").textContent = reviewed;
+        document.getElementById("pendingWrong").textContent = pending;
+        document.getElementById("mostWrongSubject").textContent = mostSubject;
+    }
+
+    function renderWrong() {
+        updateSummary();
+
+        const searchQuery = document.getElementById("searchQuery").value.toLowerCase();
+        const subjectFilter = document.getElementById("filterSubject").value;
+        const statusFilter = document.getElementById("filterStatus").value;
+        const difficultyFilter = document.getElementById("filterDifficulty").value;
+
+        let filtered = wrongQuestions.filter(item => {
+            if (subjectFilter !== "all" && item.subject !== subjectFilter) return false;
+            if (statusFilter === "pending" && item.reviewed) return false;
+            if (statusFilter === "reviewed" && !item.reviewed) return false;
+            if (difficultyFilter !== "all" && item.difficulty !== difficultyFilter) return false;
+
+            if (searchQuery) {
+                const textMatch = (item.questionText || "").toLowerCase().includes(searchQuery);
+                const topicMatch = (item.topic || "").toLowerCase().includes(searchQuery);
+                const answerMatch = (item.correctAnswer || "").toLowerCase().includes(searchQuery);
+                return textMatch || topicMatch || answerMatch;
+            }
+
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            wrongList.innerHTML = `
+                <div class="empty-state">
+                    Gösterilecek yanlış soru bulunamadı.
+                </div>
+            `;
+            return;
+        }
+
+        wrongList.innerHTML = filtered.slice().reverse().map(item => {
+            const status = item.reviewed ? "Tekrar Edildi" : "Tekrar Bekliyor";
+            const statusClass = item.reviewed ? "badge-good" : "badge-warn";
+
+            return `
+                <div style="padding:20px 0; border-bottom:1px solid #e5e7eb;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <div>
+                            <strong>${escapeHTML(item.subject)}</strong>
+                            <span class="small">• ${escapeHTML(item.topic)}</span>
+                            <span class="badge" style="margin-left:8px; background:#f3f4f6; color:#374151;">${escapeHTML(item.difficulty || "Orta")}</span>
+                        </div>
+                        <span class="badge ${statusClass}">${status}</span>
+                    </div>
+
+                    <div class="small" style="margin-top:8px">
+                        ${escapeHTML(item.type)} • Soru ${item.questionNumber} • ${escapeHTML(item.date)}
+                    </div>
+
+                    <div class="small" style="margin-top:8px">
+                        Yanlış nedeni: <strong>${escapeHTML(item.reason)}</strong>
+                    </div>
+
+                    ${
+                        item.imageData
+                        ? `<div style="margin-top:12px">
+                            <img src="${item.imageData}" alt="Soru Görseli" style="max-width:100%; max-height:300px; border-radius:8px; border:1px solid #ddd;">
+                           </div>`
+                        : ""
+                    }
+
+                    ${
+                        item.questionText
+                        ? `<div style="margin-top:12px">
+                            <strong>Soru / Açıklama</strong>
+                            <p class="small">${escapeHTML(item.questionText)}</p>
+                           </div>`
+                        : ""
+                    }
+
+                    ${
+                        item.correctAnswer
+                        ? `<div style="margin-top:12px">
+                            <strong>Doğru Çözüm</strong>
+                            <p class="small">${escapeHTML(item.correctAnswer)}</p>
+                           </div>`
+                        : ""
+                    }
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:15px;">
+                        <button class="btn btn-good" onclick="toggleReviewed('${item.id}')">
+                            ${item.reviewed ? "Tekrar Beklet" : "Tekrar Edildi"}
+                        </button>
+
+                        <button class="btn btn-soft" onclick="deleteWrong('${item.id}')">
+                            Sil
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join("");
+    }
+
+    wrongForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const imageInput = document.getElementById("wrongImage");
+        const file = imageInput.files[0];
+
+        const saveItem = (imageData = null) => {
+            const item = {
+                id: Date.now().toString(),
+                type: wrongExamSelect.value,
+                subject: wrongSubjectSelect.value,
+                topic: document.getElementById("wrongTopic").value,
+                reason: document.getElementById("wrongReason").value,
+                difficulty: document.getElementById("wrongDifficulty").value,
+                date: document.getElementById("wrongDate").value,
+                questionNumber: Number(document.getElementById("wrongQuestion").value),
+                questionText: document.getElementById("wrongQuestionText").value,
+                correctAnswer: document.getElementById("wrongCorrectAnswer").value,
+                imageData: imageData,
+                reviewed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            wrongQuestions.push(item);
+            saveWrong();
+            renderWrong();
+
+            alert("Yanlış soru başarıyla kaydedildi!");
+
+            wrongForm.reset();
+            updateSubjectOptions();
+            document.getElementById("wrongDate").valueAsDate = new Date();
+        };
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                saveItem(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            saveItem();
+        }
+    });
+
+    function toggleReviewed(id) {
+        wrongQuestions = wrongQuestions.map(item => {
+            if (item.id === id) {
+                return { ...item, reviewed: !item.reviewed };
+            }
+            return item;
+        });
+
+        saveWrong();
+        renderWrong();
+    }
+
+    function deleteWrong(id) {
+        if (!confirm("Bu yanlış soru silinsin mi?")) return;
+
+        wrongQuestions = wrongQuestions.filter(item => item.id !== id);
+        saveWrong();
+        renderWrong();
+    }
+
+    document.getElementById("searchQuery").addEventListener("input", renderWrong);
+    document.getElementById("filterSubject").addEventListener("change", renderWrong);
+    document.getElementById("filterStatus").addEventListener("change", renderWrong);
+    document.getElementById("filterDifficulty").addEventListener("change", renderWrong);
+
+    document.getElementById("clearWrong").addEventListener("click", function() {
+        if (!wrongQuestions.length) {
+            alert("Silinecek kayıt bulunmuyor.");
+            return;
+        }
+
+        if (!confirm("Tüm yanlış sorular silinsin mi?")) return;
+
+        wrongQuestions = [];
+        saveWrong();
+        renderWrong();
+    });
+
+    document.getElementById("exportWrong").addEventListener("click", function() {
+        if (!wrongQuestions.length) {
+            alert("Aktarılacak soru bulunamadı.");
+            return;
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(wrongQuestions, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "yanlis_sorular.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    });
+
+    // Başlangıç Yüklemeleri
+    updateUserProfile();
+    renderWrong();
+</script>
+
+</body>
+</html>

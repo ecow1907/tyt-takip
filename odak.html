@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odak Modu | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .focus-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .focus-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .timer-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-display {
+            font-size: 5.5rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            font-family: monospace;
+            margin: 20px 0;
+            letter-spacing: -2px;
+        }
+
+        .mode-switch {
+            display: inline-flex;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn.active {
+            background: #ffffff;
+            color: #1e3a8a;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-start {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-pause {
+            background: #eab308;
+            color: white;
+            display: none;
+        }
+
+        .btn-reset {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        /* DİKKAT DAĞITICI BİLDİRİM ENGELLEME PANELİ */
+        .notification-shield {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .shield-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .shield-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #94a3b8;
+        }
+
+        .status-dot.active {
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+
+        .blocked-log {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 6px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .reward-card {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .stat-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 15px;
+        }
+
+        /* YENİ EKLENEN SES & ORTAM SİMÜLATÖRÜ */
+        .sound-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .sound-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .sound-btn {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .sound-btn.active {
+            background: #eff6ff;
+            border-color: #2563eb;
+            color: #1d4ed8;
+        }
+
+        .badge-list {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mini-badge {
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .mini-badge.unlocked {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde047;
+        }
+
+        /* EK GELİŞMİŞ TASARIM BİLEŞENLERİ */
+        .task-input-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .task-input-box label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #334155;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .task-input-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            background: #ffffff;
+        }
+
+        .weekly-history {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            height: 90px;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .bar-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .bar {
+            width: 18px;
+            background: #cbd5e1;
+            border-radius: 4px;
+            transition: height 0.3s ease, background-color 0.3s ease;
+        }
+
+        .bar.active {
+            background: #2563eb;
+        }
+
+        .bar-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .quote-box {
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 12px 15px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #1e3a8a;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html" class="active">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>🎯 Odak Modu (Pomodoro)</h1>
+                <p>Telefon bildirimlerini zihninden uzaklaştır, süreye odaklan ve odak puanı kazan.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small" id="userTarget">Sayısal Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="focus-container">
+            
+            <!-- SAYAÇ ALANI -->
+            <div>
+                <div class="timer-card">
+                    <!-- ODAK HEDEFİ GİRDİSİ -->
+                    <div class="task-input-box">
+                        <label for="currentTaskInput">📌 Şu an Hangi Konuya Odaklanıyorsun?</label>
+                        <input type="text" id="currentTaskInput" placeholder="Örn: TYT Matematik - Üslü Sayılar Soru Çözümü">
+                    </div>
+
+                    <div class="mode-switch">
+                        <button class="mode-btn active" id="btnFocus25" onclick="setTimerDuration(25, 'focus', this)">🧠 Standart Pomodoro (25 dk)</button>
+                        <button class="mode-btn" id="btnFocus50" onclick="setTimerDuration(50, 'focus', this)">🔥 Derin Çalışma (50 dk)</button>
+                        <button class="mode-btn" id="btnBreak5" onclick="setTimerDuration(5, 'break', this)">☕ Kısa Mola (5 dk)</button>
+                        <button class="mode-btn" id="btnBreak15" onclick="setTimerDuration(15, 'break', this)">🌴 Uzun Mola (15 dk)</button>
+                    </div>
+
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+
+                    <p style="color: #64748b; font-size: 0.95rem;" id="timerMessage">Derse başlamak için hazır olduğunda "Başlat" butonuna tıkla.</p>
+
+                    <div class="timer-controls">
+                        <button class="btn-action btn-start" id="startBtn" onclick="startTimer()">Başlat ▶</button>
+                        <button class="btn-action btn-pause" id="pauseBtn" onclick="pauseTimer()">Duraklat ⏸</button>
+                        <button class="btn-action btn-reset" onclick="resetTimer()">Sıfırla 🔄</button>
+                    </div>
+
+                    <!-- DİNAMİK MOTİVASYON BÖLÜMÜ -->
+                    <div class="quote-box" id="quoteDisplay">
+                        "Başarı, her gün tekrarlanan küçük çabaların toplamıdır."
+                    </div>
+                </div>
+
+                <!-- BİLDİRİM ENGELLEME SİMÜLATÖRÜ -->
+                <div class="notification-shield">
+                    <div class="shield-header">
+                        <div class="shield-status">
+                            <div class="status-dot" id="shieldDot"></div>
+                            <div>
+                                <strong style="color: #1e293b; display: block; font-size: 0.95rem;" id="shieldTitle">Sessiz Mod Pasif</strong>
+                                <span style="color: #64748b; font-size: 0.85rem;" id="shieldDesc">Odak başlatıldığında dikkat dağıtıcı tüm bildirimler engellenir.</span>
+                            </div>
+                        </div>
+                        <span style="font-size: 1.8rem;">🔕</span>
+                    </div>
+
+                    <!-- CANLI ENGEL KÜTÜPHANESİ / LOG -->
+                    <div class="blocked-log">
+                        <strong>🛡️ Engellenen Simüle Bildirimler (<span id="blockedCount">0</span>)</strong>
+                        <div id="logList">
+                            <div class="log-item" style="color: #94a3b8; font-style: italic;">Henüz engellenen bildirim yok. Sayacı başlatın!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AMBİYANS / ODAK SESLERİ -->
+                <div class="sound-card">
+                    <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 5px;">🎧 Odaklanma Müzikleri & Ses Ortamı</h3>
+                    <p style="color: #64748b; font-size: 0.85rem;">Çalışırken zihnini toplamanı sağlayacak fon sesini seç:</p>
+                    
+                    <div class="sound-options">
+                        <button class="sound-btn active" onclick="toggleSound(this, 'Sessiz')">🤫 Sessiz</button>
+                        <button class="sound-btn" onclick="toggleSound(this, 'Yağmur')">🌧️ Yağmur Sesi</button>
+                        <button class="sound-btn" onclick="toggleSound(this, 'Kütüphane')">📚 Kütüphane</button>
+                        <button class="sound-btn" onclick="toggleSound(this, 'Beyaz Gürültü')">📻 Beyaz Gürültü</button>
+                        <button class="sound-btn" onclick="toggleSound(this, 'Kahve Dükkanı')">☕ Kahve Dükkanı</button>
+                        <button class="sound-btn" onclick="toggleSound(this, 'Orman Rüzgarı')">🌲 Orman Rüzgarı</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ODAK PUANI & İSTATİSTİK ALANI -->
+            <div>
+                <div class="reward-card">
+                    <span style="font-size: 0.85rem; opacity: 0.9; text-transform: uppercase; font-weight: bold;">Toplanan Odak Puanı</span>
+                    <div style="font-size: 2.5rem; font-weight: 800; margin: 10px 0;" id="focusPointsDisplay">0 Puan</div>
+                    <p style="font-size: 0.85rem; opacity: 0.9;">Tamamladığın her odak seansı için tecrübe ve +100 Odak Puanı kazanırsın!</p>
+                </div>
+
+                <div class="stat-box">
+                    <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 12px;">📊 Bugünkü Odak Özeti</h3>
+                    
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+                        <span style="color: #64748b; font-size: 0.9rem;">Tamamlanan Oturum:</span>
+                        <strong style="color: #1e293b;" id="completedSessions">0 Seans</strong>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; margin-top: 4px; border-bottom: 1px solid #f1f5f9;">
+                        <span style="color: #64748b; font-size: 0.9rem;">Toplam Odak Süresi:</span>
+                        <strong style="color: #1e293b;" id="totalFocusTime">0 Dk</strong>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; margin-top: 4px; border-bottom: 1px solid #f1f5f9;">
+                        <span style="color: #64748b; font-size: 0.9rem;">Verimlilik Oranı:</span>
+                        <strong style="color: #2563eb;" id="efficiencyRate">%92</strong>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; margin-top: 4px;">
+                        <span style="color: #64748b; font-size: 0.9rem;">Engellenen Bildirim:</span>
+                        <strong style="color: #22c55e;" id="totalBlockedCount">0 Tane</strong>
+                    </div>
+                </div>
+
+                <!-- HAFTALIK ODAK GRAFİĞİ SİMÜLASYONU -->
+                <div class="stat-box">
+                    <h3 style="font-size: 0.95rem; color: #1e293b; margin-bottom: 5px;">📅 Haftalık Odak Dağılımı</h3>
+                    <p style="color: #64748b; font-size: 0.75rem; margin-bottom: 10px;">Son 7 gündeki günlük çalışma sürelerin</p>
+                    
+                    <div class="weekly-history">
+                        <div class="bar-col"><div class="bar" style="height: 40px;"></div><span class="bar-label">Pzt</span></div>
+                        <div class="bar-col"><div class="bar" style="height: 60px;"></div><span class="bar-label">Sal</span></div>
+                        <div class="bar-col"><div class="bar" style="height: 30px;"></div><span class="bar-label">Çar</span></div>
+                        <div class="bar-col"><div class="bar" style="height: 75px;"></div><span class="bar-label">Per</span></div>
+                        <div class="bar-col"><div class="bar" style="height: 50px;"></div><span class="bar-label">Cum</span></div>
+                        <div class="bar-col"><div class="bar" style="height: 85px;"></div><span class="bar-label">Cmt</span></div>
+                        <div class="bar-col"><div class="bar active" style="height: 45px;" id="todayBar"></div><span class="bar-label">Paz</span></div>
+                    </div>
+                </div>
+
+                <!-- ODAK BAŞARILARI -->
+                <div class="stat-box">
+                    <h3 style="font-size: 0.95rem; color: #1e293b; margin-bottom: 8px;">🏅 Odak Başarıları</h3>
+                    <div class="badge-list">
+                        <span class="mini-badge" id="badge1">⏱️ İlk 25 Dk</span>
+                        <span class="mini-badge" id="badge2">🔥 100 Dk Kulübü</span>
+                        <span class="mini-badge" id="badge3">🛡️ Çelik İrade</span>
+                        <span class="mini-badge" id="badge4">👑 Odak Ustası</span>
+                        <span class="mini-badge" id="badge5">⚡ Derin Dalış</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    let timer;
+    let selectedMinutes = 25;
+    let timeLeft = 25 * 60;
+    let isRunning = false;
+    let currentMode = 'focus'; // 'focus' veya 'break'
+
+    let focusPoints = parseInt(localStorage.getItem('yks_focus_points') || '0');
+    let completedSessions = parseInt(localStorage.getItem('yks_completed_sessions') || '0');
+    let totalBlocked = parseInt(localStorage.getItem('yks_total_blocked') || '0');
+    
+    let mockNotificationTimer;
+    let currentBlockedSession = 0;
+
+    const mockNotifications = [
+        "📱 Instagram: 1 yeni bildiriminiz var.",
+        "💬 WhatsApp: 'Grup' yeni mesaj gönderdi.",
+        "🎮 YouTube: 'Yeni Video Yüklendi!'",
+        "🎵 TikTok: Sana özel yeni trend!",
+        "📩 E-posta: Haftalık indirim bülteni.",
+        "🐦 X (Twitter): Gündem başlıklarında yeni gelişme.",
+        "👾 Discord: Sunucuda yeni bir sohbet başladı."
+    ];
+
+    const motivationalQuotes = [
+        "Başarı, her gün tekrarlanan küçük çabaların toplamıdır.",
+        "Zorluklar, başarının değerini artıran süslerdir.",
+        "Bugün yapacağın fedakarlık, yarın yaşayacağın gururu belirler.",
+        "Gelecek, bugünden hazırlananlara aittir.",
+        "Disiplin, hedefler ile başarı arasındaki köprüdür."
+    ];
+
+    function updateDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timerDisplay').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function setTimerDuration(mins, mode, btnElement) {
+        if (isRunning) pauseTimer();
+        
+        selectedMinutes = mins;
+        currentMode = mode;
+        timeLeft = mins * 60;
+
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        if (btnElement) btnElement.classList.add('active');
+
+        if (mode === 'focus') {
+            document.getElementById('timerMessage').textContent = `${mins} dakikalık odak seansına başlamak için hazır olduğunda tıklayın.`;
+        } else {
+            document.getElementById('timerMessage').textContent = `${mins} dakikalık dinlenme zamanı! Gözlerinizi dinlendirin.`;
+        }
+        updateDisplay();
+    }
+
+    function rotateQuote() {
+        const randomIdx = Math.floor(Math.random() * motivationalQuotes.length);
+        const quoteEl = document.getElementById('quoteDisplay');
+        if (quoteEl) {
+            quoteEl.textContent = `"${motivationalQuotes[randomIdx]}"`;
+        }
+    }
+
+    function startTimer() {
+        if (isRunning) return;
+
+        isRunning = true;
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('pauseBtn').style.display = 'inline-block';
+
+        // Bildirim kalkanını aktifleştir
+        document.getElementById('shieldDot').classList.add('active');
+        document.getElementById('shieldTitle').textContent = 'Sessiz Mod Aktif 🔕';
+        document.getElementById('shieldTitle').style.color = '#15803d';
+        document.getElementById('shieldDesc').textContent = 'Telefon bildirimleri ve dikkat dağıtıcı tüm unsurlar engelleniyor.';
+
+        rotateQuote();
+
+        // Hayali bildirim engelleme simülatörünü çalıştır
+        startMockNotifications();
+
+        timer = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateDisplay();
+            } else {
+                clearInterval(timer);
+                clearInterval(mockNotificationTimer);
+                isRunning = false;
+                onTimerComplete();
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timer);
+        clearInterval(mockNotificationTimer);
+        isRunning = false;
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('pauseBtn').style.display = 'none';
+
+        // Bildirim kalkanını pasifleştir
+        document.getElementById('shieldDot').classList.remove('active');
+        document.getElementById('shieldTitle').textContent = 'Sessiz Mod Duraklatıldı';
+        document.getElementById('shieldTitle').style.color = '#1e293b';
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        timeLeft = selectedMinutes * 60;
+        updateDisplay();
+    }
+
+    function startMockNotifications() {
+        clearInterval(mockNotificationTimer);
+        mockNotificationTimer = setInterval(() => {
+            if (!isRunning || currentMode !== 'focus') return;
+            
+            const randomNotif = mockNotifications[Math.floor(Math.random() * mockNotifications.length)];
+            currentBlockedSession++;
+            totalBlocked++;
+            
+            localStorage.setItem('yks_total_blocked', totalBlocked);
+
+            document.getElementById('blockedCount').textContent = currentBlockedSession;
+            document.getElementById('totalBlockedCount').textContent = `${totalBlocked} Tane`;
+
+            const logList = document.getElementById('logList');
+            if (currentBlockedSession === 1) logList.innerHTML = '';
+
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item';
+            
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            logItem.innerHTML = `<span>${randomNotif}</span> <b style="color:#ef4444;">Engellendi (${timeStr})</b>`;
+            
+            logList.prepend(logItem);
+            
+            if (logList.children.length > 3) {
+                logList.removeChild(logList.lastChild);
+            }
+        }, 12000);
+    }
+
+    function onTimerComplete() {
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('pauseBtn').style.display = 'none';
+
+        if (currentMode === 'focus') {
+            const currentTask = document.getElementById('currentTaskInput').value.trim();
+            const earnedPoints = selectedMinutes * 4; // Dakika başına puan
+            focusPoints += earnedPoints;
+            completedSessions += 1;
+            
+            localStorage.setItem('yks_focus_points', focusPoints);
+            localStorage.setItem('yks_completed_sessions', completedSessions);
+
+            updateStats();
+            
+            let message = `🎉 Tebrikler! ${selectedMinutes} Dakikalık Odaklanma Seansını Başarıyla Tamamladın!\n\n+${earnedPoints} Odak Puanı Hesabına Eklendi.`;
+            if (currentTask) {
+                message = `🎉 "${currentTask}" konulu seansı tamamladın!\n\n+${earnedPoints} Odak Puanı Hesabına Eklendi.`;
+            }
+            alert(message);
+            
+            // Otomatik molaya yönlendir
+            const nextBreakBtn = document.getElementById('btnBreak5');
+            setTimerDuration(5, 'break', nextBreakBtn);
+        } else {
+            alert('☕ Mola süresi bitti! Yeni bir odaklanma seansına başlamaya hazır mısın?');
+            const nextFocusBtn = document.getElementById('btnFocus25');
+            setTimerDuration(25, 'focus', nextFocusBtn);
+        }
+    }
+
+    function toggleSound(btn, soundName) {
+        document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (soundName !== 'Sessiz') {
+            console.log(`[Simülasyon] ${soundName} ambiyans sesi başlatıldı.`);
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('focusPointsDisplay').textContent = `${focusPoints} Puan`;
+        document.getElementById('completedSessions').textContent = `${completedSessions} Seans`;
+        
+        const totalMinutes = completedSessions * 25;
+        document.getElementById('totalFocusTime').textContent = `${totalMinutes} Dk`;
+        document.getElementById('totalBlockedCount').textContent = `${totalBlocked} Tane`;
+
+        // Haftalık bar güncellemesi
+        const todayBar = document.getElementById('todayBar');
+        if (todayBar) {
+            const calculatedHeight = Math.min(30 + (completedSessions * 15), 90);
+            todayBar.style.height = `${calculatedHeight}px`;
+        }
+
+        // Rozet Güncellemeleri
+        if (completedSessions >= 1) {
+            document.getElementById('badge1').classList.add('unlocked');
+        }
+        if (totalMinutes >= 100) {
+            document.getElementById('badge2').classList.add('unlocked');
+        }
+        if (totalBlocked >= 10) {
+            document.getElementById('badge3').classList.add('unlocked');
+        }
+        if (completedSessions >= 10) {
+            const b4 = document.getElementById('badge4');
+            if (b4) b4.classList.add('unlocked');
+        }
+        if (totalMinutes >= 250) {
+            const b5 = document.getElementById('badge5');
+            if (b5) b5.classList.add('unlocked');
+        }
+    }
+
+    function updateUserInfo() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Ecrin Ayan";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "EA";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => el.textContent = fullName);
+        document.querySelectorAll("[data-avatar]").forEach(el => el.textContent = initials);
+
+        const userTargetEl = document.getElementById("userTarget");
+        if (userTargetEl && storedUser.target) {
+            userTargetEl.textContent = `Alan: ${storedUser.target}`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUserInfo();
+        updateStats();
+        updateDisplay();
+    });
+</script>
+
+</body>
+</html>

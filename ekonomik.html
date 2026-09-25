@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekonomik Erişim & Maliyet Hesaplayıcı | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .opportunity-banner {
+            background: linear-gradient(135deg, #0d9488, #0284c7);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 14px rgba(13, 148, 136, 0.15);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calc-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #0284c7;
+        }
+
+        .result-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0f172a;
+        }
+
+        .burs-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .burs-card:hover {
+            transform: translateY(-2px);
+            border-color: #0d9488;
+        }
+
+        .badge-tag {
+            display: inline-block;
+            background: #ccfbf1;
+            color: #0f766e;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html" class="active">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>💰 Ekonomik Erişim & Maliyet Hesaplayıcı</h1>
+                <p>Eğitimde fırsat eşitliği: Üniversite yaşamı, yurt, burs ve şehir maliyetlerini önceden planlayın.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small" id="userTarget">Sayısal Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FIRSAT EŞİTLİĞİ VURGUSU BANNER -->
+        <div class="opportunity-banner">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 2.2rem;">🤝</span>
+                <div>
+                    <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 4px;">Eğitimde Fırsat Eşitliğini Destekliyoruz</h2>
+                    <p style="font-size: 0.92rem; opacity: 0.95; line-height: 1.4;">
+                        Hedeflediğiniz üniversiteye yerleşirken ekonomik kaygıları en aza indirmek için burs fırsatlarını, KYK yurt imkanlarını ve şehir bazlı yaşam maliyetlerini tek bir yerden simüle edin.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HESAPLAYICI VE SONUÇ ALANI -->
+        <div class="calc-grid">
+            
+            <!-- GİRDİ FORMU -->
+            <div class="calc-card">
+                <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 18px;">🏛️ Yaşam Maliyeti Simülatörü</h3>
+
+                <div class="form-group">
+                    <label for="citySelect">Target Şehir / Üniversite Lokasyonu</label>
+                    <select id="citySelect" class="form-control" onchange="calculateCost()">
+                        <option value="istanbul">İstanbul (Yüksek Maliyet)</option>
+                        <option value="ankara">Ankara / İzmir (Orta-Yüksek Maliyet)</option>
+                        <option value="eskisehir">Eskişehir / Bursa / Konya (Orta Maliyet)</option>
+                        <option value="anadolu">Anadolu Şehirleri (Ekonomik Maliyet)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="housingSelect">Konaklama Tipi</label>
+                    <select id="housingSelect" class="form-control" onchange="calculateCost()">
+                        <option value="kyk">KYK Devlet Yurdu (En Ekonomik)</option>
+                        <option value="ozel">Özel Yurt (Yemek Dahil)</option>
+                        <option value="ev">Öğrenci Evi (Kira + Fatura Paylaşımlı)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bursInput">Aylık Burs / Destek Beklentisi (TL)</label>
+                    <input type="number" id="bursInput" class="form-control" placeholder="Örn: 3000 (KYK / Vakıf)" value="3000" oninput="calculateCost()">
+                </div>
+
+                <div class="form-group">
+                    <label for="personalInput">Aylık Kişisel Harcama (Ulaşım + Sosyal) (TL)</label>
+                    <input type="number" id="personalInput" class="form-control" placeholder="Örn: 2500" value="2500" oninput="calculateCost()">
+                </div>
+            </div>
+
+            <!-- ÖZET SONUÇLARI -->
+            <div class="calc-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 18px;">📊 Tahmini Maliyet Tablosu</h3>
+                    
+                    <div class="result-box">
+                        <div class="result-row">
+                            <span style="color: #64748b;">Tahmini Konaklama:</span>
+                            <strong id="housingCostDisplay">1.200 TL / ay</strong>
+                        </div>
+                        <div class="result-row">
+                            <span style="color: #64748b;">Kişisel Harcamalar:</span>
+                            <strong id="personalCostDisplay">2.500 TL / ay</strong>
+                        </div>
+                        <div class="result-row">
+                            <span style="color: #16a34a;">Gelir / Burs Desteği:</span>
+                            <strong style="color: #16a34a;" id="bursDisplay">-3.000 TL / ay</strong>
+                        </div>
+                        <div class="result-row">
+                            <span>Aylık Net İhtiyaç:</span>
+                            <strong style="color: #0284c7;" id="netMonthlyDisplay">700 TL / ay</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #eff6ff; border-left: 4px solid #0284c7; padding: 12px; border-radius: 6px; margin-top: 15px;">
+                    <span style="font-size: 0.85rem; color: #1e40af;">
+                        💡 <b>Fırsat İpucu:</b> Başarı sıralamanız ne kadar yüksek olursa vakıf ve kurum bursu alma ihtimaliniz o kadar artar!
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BURS VE DESTEK FIRSATLARI REHBERİ -->
+        <div class="card">
+            <h2 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 15px;">🎓 Burs ve Fırsat Eşitliği Rehberi</h2>
+            
+            <div class="burs-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <div>
+                        <strong style="font-size: 1rem; color: #0f172a;">KYK Öğrenim Bursu & Yurt Desteği</strong>
+                        <p style="font-size: 0.88rem; color: #64748b; margin-top: 2px;">T.C. Gençlik ve Spor Bakanlığı tarafından lisans öğrencilerine sağlanan aylık burs ve yurt olanağı.</p>
+                    </div>
+                    <span class="badge-tag">Devlet Desteği</span>
+                </div>
+            </div>
+
+            <div class="burs-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <div>
+                        <strong style="font-size: 1rem; color: #0f172a;">Başarı ve Fırsat Eşitliği Vakıf Bursları</strong>
+                        <p style="font-size: 0.88rem; color: #64748b; margin-top: 2px;">YKS'de ilk 10.000 ve 50.000 içerisine giren öğrencilere özel nakdi destek ve cep harçlığı programları.</p>
+                    </div>
+                    <span class="badge-tag">Özel Burs</span>
+                </div>
+            </div>
+
+            <div class="burs-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                    <div>
+                        <strong style="font-size: 1rem; color: #0f172a;">Üniversite İçi Yemek & Asistanlık Destekleri</strong>
+                        <p style="font-size: 0.88rem; color: #64748b; margin-top: 2px;">Birçok üniversitede sağlanan ücretsiz günlük öğle yemeği ve yarı zamanlı öğrenci asistanlığı bursları.</p>
+                    </div>
+                    <span class="badge-tag">Kampüs İçi</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    function calculateCost() {
+        const city = document.getElementById('citySelect').value;
+        const housing = document.getElementById('housingSelect').value;
+        const burs = parseFloat(document.getElementById('bursInput').value) || 0;
+        const personal = parseFloat(document.getElementById('personalInput').value) || 0;
+
+        // Şehir katsayısı
+        let cityMultiplier = 1.0;
+        if (city === 'istanbul') cityMultiplier = 1.4;
+        else if (city === 'ankara') cityMultiplier = 1.2;
+        else if (city === 'eskisehir') cityMultiplier = 1.0;
+        else if (city === 'anadolu') cityMultiplier = 0.8;
+
+        // Konaklama taban fiyatı
+        let baseHousingCost = 1200;
+        if (housing === 'kyk') baseHousingCost = 1200;
+        else if (housing === 'ozel') baseHousingCost = 6500;
+        else if (housing === 'ev') baseHousingCost = 5000;
+
+        const calculatedHousing = Math.round(baseHousingCost * cityMultiplier);
+        const calculatedPersonal = Math.round(personal * (city === 'istanbul' ? 1.2 : 1.0));
+        const totalExpense = calculatedHousing + calculatedPersonal;
+        const netCost = totalExpense - burs;
+
+        document.getElementById('housingCostDisplay').textContent = `${calculatedHousing.toLocaleString()} TL / ay`;
+        document.getElementById('personalCostDisplay').textContent = `${calculatedPersonal.toLocaleString()} TL / ay`;
+        document.getElementById('bursDisplay').textContent = `-${burs.toLocaleString()} TL / ay`;
+        
+        const netDisplayEl = document.getElementById('netMonthlyDisplay');
+        if (netCost <= 0) {
+            netDisplayEl.textContent = `0 TL (Burs Bütçeyi Karşılıyor 🎉)`;
+            netDisplayEl.style.color = '#16a34a';
+        } else {
+            netDisplayEl.textContent = `${netCost.toLocaleString()} TL / ay`;
+            netDisplayEl.style.color = '#0284c7';
+        }
+    }
+
+    function updateUserInfo() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Ecrin Ayan";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "EA";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => el.textContent = fullName);
+        document.querySelectorAll("[data-avatar]").forEach(el => el.textContent = initials);
+
+        const userTargetEl = document.getElementById("userTarget");
+        if (userTargetEl && storedUser.target) {
+            userTargetEl.textContent = `Alan: ${storedUser.target}`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUserInfo();
+        calculateCost();
+    });
+</script>
+
+</body>
+</html>

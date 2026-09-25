@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil & Hedef | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .stat-card span {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .toggle-group:last-child {
+            border-bottom: none;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2563eb;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html" class="active">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Profil & Hedef Ayarları</h1>
+                <p>Kişisel bilgilerini, sınav hedeflerini ve uygulama tercihlerini buradan yönetebilirsin.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small" id="userTargetBadge">YKS Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HIZLI İSTATİSTİK ÖZETİ -->
+        <div class="stats-summary">
+            <div class="stat-card">
+                <h4>Hedef Üniversite</h4>
+                <span id="statUniv">Belirtilmedi</span>
+            </div>
+            <div class="stat-card">
+                <h4>Hedef Sıralama</h4>
+                <span id="statRank">--</span>
+            </div>
+            <div class="stat-card">
+                <h4>Hedef TYT Net</h4>
+                <span id="statTyt">--</span>
+            </div>
+            <div class="stat-card">
+                <h4>Hedef AYT Net</h4>
+                <span id="statAyt">--</span>
+            </div>
+        </div>
+
+        <div class="profile-grid">
+
+            <!-- PROFİL BİLGİLERİ -->
+            <section class="card">
+                <div class="section-title">
+                    <h2>Kişisel Bilgiler & Öğrenim</h2>
+                </div>
+
+                <form id="profileForm" onsubmit="saveProfile(event)">
+                    <div class="field" style="margin-bottom: 15px;">
+                        <label for="profName">Ad Soyad</label>
+                        <input type="text" id="profName" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;" required>
+                    </div>
+
+                    <div class="field" style="margin-bottom: 15px;">
+                        <label for="profEmail">E-posta Adresi</label>
+                        <input type="email" id="profEmail" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;" required>
+                    </div>
+
+                    <div class="field" style="margin-bottom: 15px;">
+                        <label for="profSchool">Okul / Lise Adı</label>
+                        <input type="text" id="profSchool" placeholder="Örn: Fen Lisesi / Anadolu Lisesi" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                    </div>
+
+                    <div class="field" style="margin-bottom: 15px;">
+                        <label for="profGrade">Sınıf / Durum</label>
+                        <select id="profGrade" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                            <option value="12. Sınıf">12. Sınıf</option>
+                            <option value="Mezun">Mezun</option>
+                            <option value="11. Sınıf">11. Sınıf</option>
+                            <option value="10. Sınıf">10. Sınıf</option>
+                        </select>
+                    </div>
+
+                    <div class="field" style="margin-bottom: 20px;">
+                        <label for="profTarget">Alan Seçimi</label>
+                        <select id="profTarget" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                            <option value="Sayısal">Sayısal (SAY)</option>
+                            <option value="Eşit Ağırlık">Eşit Ağırlık (EA)</option>
+                            <option value="Sözel">Sözel (SÖZ)</option>
+                            <option value="Dil">Yabancı Dil (DİL)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;">
+                        💾 Bilgileri Güncelle
+                    </button>
+                </form>
+            </section>
+
+            <!-- HEDEF BİLGİLERİ -->
+            <section class="card">
+                <div class="section-title">
+                    <h2>Sınav & Net Hedefleri</h2>
+                </div>
+
+                <form id="goalForm" onsubmit="saveGoals(event)">
+                    <div class="field" style="margin-bottom: 15px;">
+                        <label for="targetUniv">Hedef Üniversite / Bölüm</label>
+                        <input type="text" id="targetUniv" placeholder="Örn: İTÜ - Bilgisayar Mühendisliği" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                    </div>
+
+                    <div class="field" style="margin-bottom: 15px;">
+                        <label for="targetRank">Hedef Sıralama</label>
+                        <input type="number" id="targetRank" placeholder="Örn: 5000" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div class="field">
+                            <label for="targetTytNet">Hedef TYT Net</label>
+                            <input type="number" step="0.5" id="targetTytNet" placeholder="Örn: 95.5" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                        </div>
+                        <div class="field">
+                            <label for="targetAytNet">Hedef AYT Net</label>
+                            <input type="number" step="0.5" id="targetAytNet" placeholder="Örn: 68.0" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                        </div>
+                    </div>
+
+                    <div class="field" style="margin-bottom: 20px;">
+                        <label for="targetWeeklyHours">Haftalık Çalışma Saati Hedefi</label>
+                        <input type="number" id="targetWeeklyHours" placeholder="Örn: 35 Saat" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;">
+                        🎯 Hedefleri Kaydet
+                    </button>
+                </form>
+            </section>
+
+            <!-- TERCIHLER VE TERCİH AYARLARI -->
+            <section class="card">
+                <div class="section-title">
+                    <h2>Uygulama & Bildirim Tercihleri</h2>
+                </div>
+
+                <div class="toggle-group">
+                    <div>
+                        <strong style="display:block; font-size: 0.9rem; color: #1e293b;">Günlük Hatırlatıcılar</strong>
+                        <span style="font-size: 0.8rem; color: #64748b;">Her gün çalışma saatin geldiğinde bildirim al.</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="prefDailyReminder" onchange="savePreferences()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <div>
+                        <strong style="display:block; font-size: 0.9rem; color: #1e293b;">Veli Rapor Paylaşımı</strong>
+                        <span style="font-size: 0.8rem; color: #64748b;">Haftalık deneme özetlerini veli paneline aktar.</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="prefParentShare" onchange="savePreferences()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-group">
+                    <div>
+                        <strong style="display:block; font-size: 0.9rem; color: #1e293b;">Odak Ses Efektleri</strong>
+                        <span style="font-size: 0.8rem; color: #64748b;">Pomodoro bittiğinde sesli uyarı ver.</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="prefSoundEffects" onchange="savePreferences()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- HESAP YÖNETİMİ -->
+            <section class="card">
+                <div class="section-title">
+                    <h2>Hesap Yönetimi & Veriler</h2>
+                </div>
+
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">
+                    Hesap verilerinizi cihazınızda yerel olarak saklıyoruz. İstediğiniz zaman verilerinizi sıfırlayabilir veya çıkış yapabilirsiniz.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn btn-soft" style="width:100%; color: #d97706; border-color: #fde68a;" onclick="resetData()">
+                        🧹 Çalışma Verilerini Sıfırla
+                    </button>
+                    <button class="btn btn-soft" style="width:100%; color: #dc2626; border-color: #fecaca;" onclick="logout()">
+                        🚪 Oturumu Kapat / Çıkış Yap
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+    // Sayfa Yüklendiğinde Tüm Verileri Getir
+    function loadProfileData() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+
+        if (storedUser.fullName) document.getElementById("profName").value = storedUser.fullName;
+        if (storedUser.email) document.getElementById("profEmail").value = storedUser.email;
+        if (storedUser.school) document.getElementById("profSchool").value = storedUser.school;
+        if (storedUser.grade) document.getElementById("profGrade").value = storedUser.grade;
+        if (storedUser.target) document.getElementById("profTarget").value = storedUser.target;
+
+        if (storedUser.targetUniv) document.getElementById("targetUniv").value = storedUser.targetUniv;
+        if (storedUser.targetRank) document.getElementById("targetRank").value = storedUser.targetRank;
+        if (storedUser.targetTytNet) document.getElementById("targetTytNet").value = storedUser.targetTytNet;
+        if (storedUser.targetAytNet) document.getElementById("targetAytNet").value = storedUser.targetAytNet;
+        if (storedUser.targetWeeklyHours) document.getElementById("targetWeeklyHours").value = storedUser.targetWeeklyHours;
+
+        // Tercihler
+        const prefs = storedUser.preferences || {};
+        document.getElementById("prefDailyReminder").checked = prefs.dailyReminder ?? true;
+        document.getElementById("prefParentShare").checked = prefs.parentShare ?? true;
+        document.getElementById("prefSoundEffects").checked = prefs.soundEffects ?? true;
+
+        updateUserProfile();
+        updateStatsSummary();
+    }
+
+    // Profil Bilgilerini Güncelle
+    function saveProfile(e) {
+        e.preventDefault();
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+
+        storedUser.fullName = document.getElementById("profName").value.trim();
+        storedUser.email = document.getElementById("profEmail").value.trim();
+        storedUser.school = document.getElementById("profSchool").value.trim();
+        storedUser.grade = document.getElementById("profGrade").value;
+        storedUser.target = document.getElementById("profTarget").value;
+
+        localStorage.setItem("yks_user", JSON.stringify(storedUser));
+        updateUserProfile();
+
+        alert("Kişisel ve öğrenim bilgileriniz başarıyla güncellendi.");
+    }
+
+    // Hedef Bilgilerini Kaydet
+    function saveGoals(e) {
+        e.preventDefault();
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+
+        storedUser.targetUniv = document.getElementById("targetUniv").value.trim();
+        storedUser.targetRank = document.getElementById("targetRank").value.trim();
+        storedUser.targetTytNet = document.getElementById("targetTytNet").value;
+        storedUser.targetAytNet = document.getElementById("targetAytNet").value;
+        storedUser.targetWeeklyHours = document.getElementById("targetWeeklyHours").value;
+
+        localStorage.setItem("yks_user", JSON.stringify(storedUser));
+        updateStatsSummary();
+
+        alert("Hedefleriniz başarıyla kaydedildi.");
+    }
+
+    // Tercihleri Kaydet
+    function savePreferences() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        storedUser.preferences = {
+            dailyReminder: document.getElementById("prefDailyReminder").checked,
+            parentShare: document.getElementById("prefParentShare").checked,
+            soundEffects: document.getElementById("prefSoundEffects").checked
+        };
+        localStorage.setItem("yks_user", JSON.stringify(storedUser));
+    }
+
+    // Özet Alanını Güncelle
+    function updateStatsSummary() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        
+        document.getElementById("statUniv").textContent = storedUser.targetUniv || "Belirtilmedi";
+        document.getElementById("statRank").textContent = storedUser.targetRank ? `#${storedUser.targetRank}` : "--";
+        document.getElementById("statTyt").textContent = storedUser.targetTytNet ? `${storedUser.targetTytNet} Net` : "--";
+        document.getElementById("statAyt").textContent = storedUser.targetAytNet ? `${storedUser.targetAytNet} Net` : "--";
+    }
+
+    // Profil ve Avatar Senkronizasyonu
+    function updateUserProfile() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "Kullanıcı";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "YKS";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => el.textContent = fullName);
+        document.querySelectorAll("[data-avatar]").forEach(el => el.textContent = initials);
+
+        const badgeEl = document.getElementById("userTargetBadge");
+        if (badgeEl && storedUser.target) {
+            badgeEl.textContent = `${storedUser.target} Öğrencisi`;
+        }
+    }
+
+    // Verileri Sıfırla
+    function resetData() {
+        if (confirm("Çalışma ve deneme verilerinizi sıfırlamak istediğinize emin misiniz? Bu işlem geri alınamaz.")) {
+            localStorage.removeItem("yks_completed_sessions");
+            localStorage.removeItem("yks_focus_points");
+            localStorage.removeItem("yks_total_blocked");
+            alert("İstatistik ve sayaç verileriniz başarıyla sıfırlandı.");
+            location.reload();
+        }
+    }
+
+    // Çıkış Yapma İşlemi
+    function logout() {
+        if (confirm("Oturumu kapatmak istediğinize emin misiniz?")) {
+            localStorage.removeItem("yks_user");
+            window.location.href = "index.html";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadProfileData);
+</script>
+
+</body>
+</html>

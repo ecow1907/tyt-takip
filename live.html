@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canlı Ders | YKS Akıllı Takip</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <style>
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        .schedule-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .schedule-table tr {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .schedule-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .badge-upcoming {
+            background-color: #ede9fe;
+            color: #7c3aed;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-planned {
+            background-color: #f1f5f9;
+            color: #6366f1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* YOUTUBE DIŞI DOĞRUDAN HTML5 VİDEO OYNATICI ALANI */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Oranı */
+            height: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0f172a;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            object-fit: contain;
+            background-color: #000;
+        }
+
+        /* DERS BİLGİ KUTUSU */
+        .math-lecture-box {
+            background: #f8fafc;
+            border-left: 4px solid #4f46e5;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .math-lecture-box h3 {
+            margin: 0 0 8px 0;
+            color: #1e293b;
+            font-size: 1.05rem;
+        }
+
+        .math-lecture-box ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #475569;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* EKLENEN YENİ CSS BİLEŞENLERİ */
+        .tab-menu {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            font-size: 0.9rem;
+        }
+
+        .tab-btn.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
+
+        .announcement-box {
+            background: #fffbe3;
+            border: 1px solid #fde047;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-top: 15px;
+            font-size: 0.88rem;
+            color: #854d0e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .past-lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .lesson-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .lesson-thumb {
+            height: 110px;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            position: relative;
+        }
+
+        .lesson-duration {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .lesson-info {
+            padding: 12px;
+        }
+
+        .lesson-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .lesson-meta {
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+
+        /* MODAL STİLLERİ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🎓</div>
+            YKS Akıllı Takip
+        </div>
+
+        <nav class="nav">
+            <a href="dashboard.html">🏠 Genel Panel</a>
+            <a href="program.html">📅 Çalışma Programım</a>
+            <a href="exams.html">📝 Denemelerim</a>
+            <a href="odak.html">🎯 Odak Modu</a>
+            <a href="kutuphane.html">📚 Kaynak Kütüphanesi</a>
+            <a href="oyun.html">🎮 Oyunlaştırma & Rozetler</a>
+            <a href="analysis.html">📊 Yanlış Analizi</a>
+            <a href="universities.html">🏛️ Üniversite & Bölüm</a>
+            <a href="ekonomik.html" class="active">💰 Ekonomik Erişim & Burs</a>
+            <a href="daily-test.html">✅ Günlük Test</a>
+            <a href="live.html">🎥 Canlı Ders</a>
+            <a href="parent.html">👨‍👩‍👧 Veli Paneli</a>
+            <a href="premium.html">⭐ Premium Ol</a>
+            <a href="profile.html">⚙️ Profil & Hedef</a>
+        </nav>
+
+        <div class="footer-note">
+            <br>
+            YKS 2027
+        </div>
+    </aside>
+
+    <!-- ANA İÇERİK -->
+    <main class="content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div>
+                <h1>Canlı Dersler</h1>
+                <p>İnteraktif canlı yayınlara katıl, konuları uzman öğretmenlerle pekiştir.</p>
+            </div>
+
+            <div class="user-chip">
+                <div class="avatar" data-avatar>--</div>
+                <div>
+                    <b data-name>Kullanıcı</b>
+                    <div class="small">YKS Öğrencisi</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CANLI DERS İÇERİĞİ VE SOHBET -->
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 20px; align-items: start;">
+
+            <!-- SOL: DERS VİDEOSU VE İÇERİK -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h2 style="font-size: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                        <span style="color: #ef4444;">🔴</span> Canlı Yayın: TYT Matematik - Problem Çözüm Kampı
+                    </h2>
+                    <span class="badge" style="background: #ede9fe; color: #6366f1; font-weight: 600; padding: 4px 12px; border-radius: 20px;">CANLI</span>
+                </div>
+
+                <!-- YOUTUBE OLMAYAN KESİN ÇALIŞAN VİDEO OYNATICI -->
+                <div class="video-container">
+                    <video controls playsinline preload="metadata" poster="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1200&auto=format&fit=crop">
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                        Tarayıcınız video oynatmayı desteklemiyor.
+                    </video>
+                </div>
+
+                <!-- EĞİTMEN DUYURUSU -->
+                <div class="announcement-box">
+                    <span>📣</span>
+                    <div><b>Mustafa Hoca:</b> Arkadaşlar ders sonunda 5 soruluk mini bir tarama testi yapacağız. Lütfen notlarınızı alarak dinleyin!</div>
+                </div>
+
+                <!-- KONU DETAYLARI VE ÖNEMLİ TAKTİKLER -->
+                <div class="math-lecture-box">
+                    <h3>📌 Konu: Sayı Problemleri ve Pratik Yollar</h3>
+                    <ul>
+                        <li><b>Denklem Kurma Taktiği:</b> Bilinmeyene 'x' verip sorudaki işlem sırasını aynen takip edin.</li>
+                        <li><b>Kesir Problemleri:</b> Paydadaki sayıların en küçük ortak katını (EKOK) bütüne değer vererek kesirlerden kurtulun.</li>
+                        <li><b>Kuyruk / Sıralama Problemleri:</b> Kişi sayısı = Baştan Sıra + Sondan Sıra - 1</li>
+                    </ul>
+                </div>
+
+                <!-- DERS DETAYI VE İNDİRME BUTONU -->
+                <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div style="font-size: 1rem;">
+                        <strong>Eğitmen:</strong> Mustafa Hoca (TYT Matematik)
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" id="downloadPdfBtn" style="display: inline-flex; align-items: center; gap: 8px; background-color: #4f46e5; border: none; padding: 10px 18px; color: white; border-radius: 8px; cursor: pointer; font-weight: 500;">
+                            📄 Ders Notunu İndir (PDF)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAĞ: CANLI SOHBET VE SEKMELER -->
+            <div class="card" style="height: 100%; min-height: 480px; display: flex; flex-direction: column;">
+                
+                <div class="tab-menu">
+                    <button class="tab-btn active" onclick="switchTab('chatTab', this)">💬 Canlı Sohbet</button>
+                    <button class="tab-btn" onclick="switchTab('qaTab', this)">❓ Soru-Cevap</button>
+                </div>
+
+                <!-- TAB 1: SOHBET -->
+                <div id="chatTab" style="display: flex; flex-direction: column; flex: 1;">
+                    <div id="chatMessages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 5px; font-size: 0.9rem; max-height: 350px;">
+                        <div><b>Zeynep K.:</b> Sayı problemlerinde payda eşitleme kuralı çok vakit kazandırıyor!</div>
+                        <div><b>Mert T.:</b> Hoca 2. örnek sorudaki x ve y kurgusunu tekrar gösterir misiniz?</div>
+                        <div><b>Selin A.:</b> Pratik yollar harika anlatılıyor, PDF notunu indirdim teşekkürler!</div>
+                    </div>
+
+                    <form id="chatForm" style="margin-top: 15px; display: flex; gap: 8px;">
+                        <input type="text" id="chatInput" placeholder="Bir mesaj yaz..." style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;" required>
+                        <button class="btn btn-primary" type="submit" style="background-color: #4f46e5; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">Gönder</button>
+                    </form>
+                </div>
+
+                <!-- TAB 2: SORU-CEVAP -->
+                <div id="qaTab" style="display: none; flex-direction: column; flex: 1;">
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Eğitmene doğrudan soru iletin. Sadece eğitmen tarafından yanıtlanan sorular görünür.</p>
+                    <div id="qaMessages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; max-height: 330px;">
+                        <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border-left: 3px solid #6366f1;">
+                            <b>Ahmet R.:</b> Payda eşitlemede EKOK yerine çarpım kullansak fark eder mi?
+                            <div style="color: #4f46e5; font-size: 0.82rem; margin-top: 4px;"><b>Mustafa Hoca:</b> İşlem uzar ama doğru sonuca yine ulaşırsın.</div>
+                        </div>
+                    </div>
+                    <form id="qaForm" style="margin-top: 15px; display: flex; gap: 8px;">
+                        <input type="text" id="qaInput" placeholder="Eğitmene bir soru sor..." style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                        <button class="btn btn-primary" type="submit" style="background-color: #0284c7; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer;">Sor</button>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- YAKLAŞAN CANLI DERS PROGRAMI TABLOSU -->
+        <div class="card" style="margin-top: 25px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 0;">
+                    Yaklaşan Canlı Ders Programı
+                </h2>
+                <span style="font-size: 0.88rem; color: #64748b;">Haftalık Ders Programı Güncellendi</span>
+            </div>
+
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Tarih & Saat</th>
+                        <th>Ders / Konu</th>
+                        <th>Eğitmen</th>
+                        <th>Durum</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bugün - 19:30</td>
+                        <td><b>TYT Matematik</b> - Yaş ve Hız Problemleri</td>
+                        <td>Mustafa Hoca</td>
+                        <td><span class="badge-upcoming">Yaklaşımda</span></td>
+                        <td><button class="btn" onclick="openReminderModal('Yaş ve Hız Problemleri')" style="padding: 4px 10px; font-size: 0.8rem; background: #e0e7ff; color: #4338ca; border: none; border-radius: 6px; cursor: pointer;">🔔 Hatırlat</button></td>
+                    </tr>
+                    <tr>
+                        <td>Yarın - 18:00</td>
+                        <td><b>AYT Matematik</b> - İkinci Dereceden Denklemler</td>
+                        <td>Ahmet Hoca</td>
+                        <td><span class="badge-planned">Planlandı</span></td>
+                        <td><button class="btn" onclick="openReminderModal('İkinci Dereceden Denklemler')" style="padding: 4px 10px; font-size: 0.8rem; background: #f1f5f9; color: #475569; border: none; border-radius: 6px; cursor: pointer;">🔔 Hatırlat</button></td>
+                    </tr>
+                    <tr>
+                        <td>24 Eylül - 20:00</td>
+                        <td><b>TYT Matematik</b> - Yüzde & Kar-Zarar Problemleri</td>
+                        <td>Mustafa Hoca</td>
+                        <td><span class="badge-planned">Planlandı</span></td>
+                        <td><button class="btn" onclick="openReminderModal('Yüzde & Kar-Zarar Problemleri')" style="padding: 4px 10px; font-size: 0.8rem; background: #f1f5f9; color: #475569; border: none; border-radius: 6px; cursor: pointer;">🔔 Hatırlat</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- KAYDEDİLMİŞ GEÇMİŞ YAYINLAR ARŞİVİ -->
+        <div class="card" style="margin-top: 25px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; color: #1e293b;">
+                📼 Geçmiş Ders Kayıtları
+            </h2>
+            <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 15px;">Kaçırdığınız canlı yayınları yeniden izleyebilirsiniz.</p>
+
+            <div class="past-lessons-grid">
+                <div class="lesson-card">
+                    <div class="lesson-thumb">
+                        📐
+                        <span class="lesson-duration">45 Dk</span>
+                    </div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">TYT - Üslü ve Köklü İfadeler</div>
+                        <div class="lesson-meta">Mustafa Hoca • 20 Eylül 2026</div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-thumb" style="background: #065f46;">
+                        🧪
+                        <span class="lesson-duration">50 Dk</span>
+                    </div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">TYT Kimya - Mol Kavramı</div>
+                        <div class="lesson-meta">Sibel Hoca • 18 Eylül 2026</div>
+                    </div>
+                </div>
+
+                <div class="lesson-card">
+                    <div class="lesson-thumb" style="background: #991b1b;">
+                        ⚡
+                        <span class="lesson-duration">55 Dk</span>
+                    </div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">AYT Fizik - Vektörler ve Kuvvet</div>
+                        <div class="lesson-meta">Burak Hoca • 15 Eylül 2026</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<!-- HATIRLATICI MODALI -->
+<div class="modal-overlay" id="reminderModal">
+    <div class="modal-content">
+        <h3 style="margin-top: 0; color: #1e293b;">🔔 Ders Hatırlatıcısı Kur</h3>
+        <p style="color: #64748b; font-size: 0.9rem;" id="modalLessonText">Seçilen ders için bildirim alacaksınız.</p>
+        <div style="margin: 15px 0;">
+            <label style="display: block; font-size: 0.85rem; color: #475569; margin-bottom: 5px;">Hatırlatma Zamanı:</label>
+            <select style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <option>Ders Başlamadan 15 Dakika Önce</option>
+                <option>Ders Başlamadan 1 Saat Önce</option>
+                <option>Ders Başladığı Anda</option>
+            </select>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button onclick="closeReminderModal()" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: white; border-radius: 6px; cursor: pointer;">İptal</button>
+            <button onclick="saveReminder()" style="padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 6px; cursor: pointer;">Hatırlatıcı Koy</button>
+        </div>
+    </div>
+</div>
+
+<script src="assets/app.js"></script>
+
+<script>
+    function updateUserProfile() {
+        const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+        const fullName = storedUser.fullName || storedUser.name || "ecrin ayan";
+
+        const nameParts = fullName.trim().split(" ");
+        let initials = "";
+        if (nameParts.length >= 2) {
+            initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        } else if (nameParts.length === 1 && nameParts[0].length > 0) {
+            initials = nameParts[0].substring(0, 2).toUpperCase();
+        } else {
+            initials = "EA";
+        }
+
+        document.querySelectorAll("[data-name]").forEach(el => {
+            el.textContent = fullName;
+        });
+
+        document.querySelectorAll("[data-avatar]").forEach(el => {
+            el.textContent = initials;
+        });
+    }
+
+    function setupPdfDownload() {
+        const downloadBtn = document.getElementById("downloadPdfBtn");
+
+        downloadBtn.addEventListener("click", () => {
+            const sampleContent = `YKS AKILLI TAKİP - DERS NOTLARI
+--------------------------------------------------
+Ders: TYT Matematik
+Konu: Sayı Problemleri ve Pratik Yollar
+Eğitmen: Mustafa Hoca
+Tarih: ${new Date().toLocaleDateString("tr-TR")}
+
+ÖNEMLİ FORMÜLLER & PRATİK YOLLAR:
+1. Denklem Kurma: Bilinmeyen için "x" tanımlayın.
+2. Ardışık Sayılar: n, n+1, n+2 ...
+3. Tel / Kesir Problemleri: Paydaların EKOK'unu toplam uzunluk alın.
+4. Sıra Problemleri: Kişi Sayısı = Baştan + Sondan - 1
+
+İyi Çalışmalar!`;
+
+            const blob = new Blob([sampleContent], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            
+            const tempLink = document.createElement("a");
+            tempLink.href = url;
+            tempLink.download = "TYT_Matematik_Sayi_Problemleri_Ders_Notu.txt";
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    function setupChat() {
+        const chatForm = document.getElementById("chatForm");
+        const chatInput = document.getElementById("chatInput");
+        const chatMessages = document.getElementById("chatMessages");
+
+        chatForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+            const userName = storedUser.fullName || storedUser.name || "ecrin ayan";
+
+            const msgDiv = document.createElement("div");
+            msgDiv.innerHTML = `<b>${userName}:</b> ${message}`;
+            chatMessages.appendChild(msgDiv);
+
+            chatInput.value = "";
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+
+    /* EKLENEN SEKMELER ARASI GEÇİŞ VE SORU İLETİM FONKSİYONLARI */
+    function switchTab(tabId, btn) {
+        document.getElementById("chatTab").style.display = "none";
+        document.getElementById("qaTab").style.display = "none";
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+        document.getElementById(tabId).style.display = "flex";
+        btn.classList.add("active");
+    }
+
+    function setupQA() {
+        const qaForm = document.getElementById("qaForm");
+        const qaInput = document.getElementById("qaInput");
+        const qaMessages = document.getElementById("qaMessages");
+
+        qaForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const qText = qaInput.value.trim();
+            if (!qText) return;
+
+            const storedUser = JSON.parse(localStorage.getItem("yks_user") || "{}");
+            const userName = storedUser.fullName || storedUser.name || "ecrin ayan";
+
+            const div = document.createElement("div");
+            div.style.cssText = "background: #f8fafc; padding: 10px; border-radius: 8px; border-left: 3px solid #6366f1;";
+            div.innerHTML = `<b>${userName}:</b> ${qText} <div style="color:#eab308; font-size: 0.8rem; margin-top: 4px;">⏳ Eğitmen onayı bekleniyor...</div>`;
+            qaMessages.appendChild(div);
+
+            qaInput.value = "";
+            qaMessages.scrollTop = qaMessages.scrollHeight;
+        });
+    }
+
+    /* HATIRLATICI MODAL FONKSİYONLARI */
+    function openReminderModal(lessonName) {
+        document.getElementById("modalLessonText").textContent = `"${lessonName}" dersi için bildirim ayarlanacak.`;
+        document.getElementById("reminderModal").style.display = "flex";
+    }
+
+    function closeReminderModal() {
+        document.getElementById("reminderModal").style.display = "none";
+    }
+
+    function saveReminder() {
+        alert("Hatırlatıcı başarıyla eklendi! Ders vaktinden önce bildirim alacaksınız.");
+        closeReminderModal();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        updateUserProfile();
+        setupPdfDownload();
+        setupChat();
+        setupQA();
+    });
+</script>
+
+</body>
+</html>
